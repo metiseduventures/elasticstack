@@ -15,8 +15,7 @@ esac
 
 
 
-stagingdb="storefront-staging-db bigservicedb-stag1 extradb-staging storeresultdb-stage userdb-stag video-streaming-db-staging adda-wordpress-prod-db storefront-staging-slave1";
-staging1db="erpdb-stag franchise-stag pushservicedb-stag rankanalytics-staging timelinedb-stag coupon-staging-db";
+stagingdb="storefront-staging-db bigservicedb-stag1 extradb-staging storeresultdb-stage userdb-stag video-streaming-db-staging adda-wordpress-prod-db";
 stagingclusterdb="";
 
 for i in $stagingdb

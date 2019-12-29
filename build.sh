@@ -51,7 +51,8 @@ fi
 noteit()
 {
 	mysql -u$dbuser -p$dbpass -h$dbhost $dbname -e "INSERT INTO $dbtable (\`time\`, \`appname\`, \`environment\`, \`branch\`, \`remark\`, \`user\`, \`isprod\`) VALUES (now(), '$appname', '$envName', '$branch','$msg','$user',false)";
-
+ 	groupmsg=$appname" is being deployed to "$envName" from "$branch" branch.";	
+	python /home/ec2-user/devops/devops-bot.py "${groupmsg}";
 }
 
 verifyAppName()
@@ -98,6 +99,11 @@ verifyAppName()
                         else
                                 case "$arg5" in
                                         staging )
+						if [ -z "$tag" ]; then
+							echo "Tag not provided";
+							echo "usage : build.sh -a beta-store -b <branch> staing -t <tag>";
+							exit 1;
+						fi
                                                 echo "making unity build using $arg5 properties";;
                                         *)
                                                 echo "Invalid Argument No 5 | Valid Values [staging/production]";
@@ -561,7 +567,7 @@ case  $appname in
                 cd $gitpath;
                 git stash;
                 git fetch --all --tags --prune ;
-                git checkout tags/v1.0.3;	
+                git checkout tags/$tag;	
 		if [[ $? -ne 0 ]]; then
                         echo "Branch does not exist. Run again. Exiting"
                         exit $?

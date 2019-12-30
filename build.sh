@@ -59,7 +59,7 @@ verifyAppName()
 {
 	local app=$1;
 	case "$app" in
-		erp | userauth | bigservice | analytics | appInstall | contentadmin | franchise | mailingservice | pushservice | ranking | testseries | timeline | Video-Streaming-server | store-elastic-search | coupon-admin | couponservice | extraservice | socialapi | suggest )
+		erp | userauth | bigservice | analytics | appInstall | contentadmin | franchise | mailingservice | pushservice | ranking | testseries | timeline | Video-Streaming-server | store-elastic-search | coupon-admin | couponservice | extraservice | socialapi | newcouponadmin )
 					;;
 		admin-panel-ui | storefront-user | storefront-admin )
 			if [ -z "$arg5" ]; then
@@ -168,6 +168,10 @@ findEnvName()
 		elif [ "$arg5" = "qa1" ]; then
 			envName="contentadminqa1";
 		fi;;
+	newcouponadmin )
+		if [ "$arg5" = "staging" ]; then
+			envName="newcouponadminstaging";
+		fi;;	
 	coupon-admin )
 		if [ "$arg5" = "staging" ]; then
 			envName="CouponAdminStaging";
@@ -340,6 +344,9 @@ findAppWarName()
 	coupon-admin)
 		appwarname="coupon-admin";
 		appwarkey="in/careerpower/coupon/$appwarname/1.0.0/$appwarname-1.0.0.war";;
+	newcouponadmin)
+		appwarname="coupon-admin";
+		appwarkey="in/careerpower/coupon/$appwarname/2.0.0/$appwarname-2.0.0.war";;
 	couponservice)
 		appwarname="coupon-service-web";
 		appwarkey="in/careerpower/coupon/$appwarname/1.0.0/$appwarname-1.0.0.war";;
@@ -436,6 +443,14 @@ findAppPath()
 		gitpath=$gitHome"coupon";;
 	coupon-admin)
 		gitpath=$gitHome"coupon/coupon-admin";;
+	coupon-entities)
+		gitpath=$gitHome"couponnew/coupon-entities";;
+	coupon-commons)
+		gitpath=$gitHome"couponnew/coupon-commons";;
+	newcoupon)
+		gitpath=$gitHome"couponnew";;
+	newcouponadmin)
+		gitpath=$gitHome"couponnew/coupon-admin";;
 	couponservice)
 		gitpath=$gitHome"coupon/coupon-service-web";;
 	storefront-jpa-entities)
@@ -527,6 +542,17 @@ findDependency()
 		buildPackage commons-parent $gitpath master;
 		findAppPath admin-panel-commons;
 		buildPackage admin-panel-commons $gitpath master;;
+	newcouponadmin)
+		findAppPath newcoupon;
+                buildPackage newcoupon $gitpath $brch;
+		#findAppPath coupon-entities;
+                #buildPackage coupon-entities $gitpath $brch;
+		#findAppPath coupon-commons;
+                #buildPackage coupon-commons $gitpath $brch;
+		findAppPath commons-parent;
+		buildPackage commons-parent $gitpath master;
+		findAppPath admin-panel-commons;
+		buildPackage admin-panel-commons $gitpath versionFix;;
 	couponservice)
 		findAppPath commons-parent;
 		buildPackage commons-parent $gitpath master;
@@ -720,7 +746,14 @@ find /home/ec2-user/.m2/repository/ -type f -name "*.war" -exec rm -f {} \;
 
 # create application version 
 
-aws elasticbeanstalk create-application-version --application-name $appname --version-label "$appname-$branch-$msg-$buildtime" --description "automated build of $appname from $branch branch" --source-bundle S3Bucket="adda247-builds-repo",S3Key="$appwarname-$branch-$buildtime.war";
+if [ "$appname" = "newcouponadmin" ]; then
+	appnametwist="coupon-admin";
+else
+	appnametwist=$appname;
+fi
+
+
+aws elasticbeanstalk create-application-version --application-name $appnametwist --version-label "$appname-$branch-$msg-$buildtime" --description "automated build of $appname from $branch branch" --source-bundle S3Bucket="adda247-builds-repo",S3Key="$appwarname-$branch-$buildtime.war";
 
 # update application when staging
 

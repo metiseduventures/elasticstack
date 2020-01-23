@@ -15,13 +15,16 @@ esac
 
 
 
-stagingdb="storefront-staging-db bigservicedb-stag1 extradb-staging storeresultdb-stage userdb-stag video-streaming-db-staging adda-wordpress-prod-db";
+#stagingdb="storefront-staging-db bigservicedb-stag1 extradb-staging storeresultdb-stage userdb-stag video-streaming-db-staging";
+stagingdb="storefront-staging-db bigservicedb-stag1 storeresultdb-stage userdb-stag video-streaming-db-staging";
+##adda-wordpress-prod-db";
 stagingclusterdb="";
 
 for i in $stagingdb
 do
 	echo "Initiating $dbaction on database  $i";
- 		
+	groupmsg="Initiating "$dbaction" on database "$i;	
+	python /home/ec2-user/devops/devops-bot.py "${groupmsg}"; 		
 	aws rds $dbaction --db-instance-identifier $i;
 done
 

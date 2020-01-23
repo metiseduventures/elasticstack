@@ -621,6 +621,7 @@ case  $appname in
 		buildtime=$(timestamp);
 		npm i
 		nvm install v10.16.1
+		nvm use 10.16.1
 		NODE_ENV=${env} yarn run build -- --release
 		echo "Adding proxy config ${env}"
 		mv -f .ebextensions/${env} .ebextensions/proxy.config
@@ -685,7 +686,7 @@ case  $appname in
 		find /home/ec2-user/.m2/repository/ -type f -name "*.war" -exec rm -f {} \;
 		aws elasticbeanstalk create-application-version --application-name $appname --version-label "$appname-$branch-$msg-$buildtime" --description "automated build of $appname from $branch branch" --source-bundle S3Bucket="adda247-builds-repo",S3Key="$appwarname-$branch-$buildtime.zip";
                 aws elasticbeanstalk update-environment --environment-name bigservice-stag-env --version-label "$appname-$branch-$msg-$buildtime";
-
+		noteit;
 		exit 0;
 		
 	;;
@@ -762,6 +763,10 @@ findEnvName $appname $arg5
 case "$arg5" in
 	staging1 | staging2 | stagingv | alpha | beta | qa1 | staging )
 		aws elasticbeanstalk update-environment --environment-name $envName --version-label "$appname-$branch-$msg-$buildtime";
+		if [[ $? -ne 0 ]]; then
+                	echo "Environment Deploy Failed. Check again. Exiting";
+                	exit $?
+        	fi
 		noteit ;;
         *)
         echo "Please deploy new build with label $appname-$branch-$msg-$buildtime to  application manually";;

@@ -242,7 +242,7 @@ findEnvName()
 		fi;;
 	testseries )
 		if [ "$arg5" = "staging" ]; then
-			envName="testseries-stag-env";
+			envName="testseriesstaging";
 		elif [ "$arg5" = "qa1" ]; then
 			envName="testseriesqa1";
 		fi;;
@@ -508,19 +508,19 @@ findDependency()
 		findAppPath commons-parent;
 		buildPackage commons-parent $gitpath master;
 		findAppPath magazines-service;
-		buildPackage magazines-service $gitpath cloudfrontUrl-springversionFix; 
+		buildPackage magazines-service $gitpath masterspringfix; 
 		findAppPath articles-service;
-		buildPackage articles-service $gitpath cloudfrontUrl-springversionFix;
+		buildPackage articles-service $gitpath masterspringfix; 
 		findAppPath capsules-service;
-		buildPackage capsules-service $gitpath cloudfrontUrl-springversionFix;
+		buildPackage capsules-service $gitpath masterspringfix; 
 		findAppPath currentaffairs-service;
-		buildPackage currentaffairs-service $gitpath cloudfrontUrl-springversionFix;
+		buildPackage currentaffairs-service $gitpath masterspringfix;
 		findAppPath jobalerts-service;
-		buildPackage jobalerts-service $gitpath cloudfrontUrl-springversionFix;
+		buildPackage jobalerts-service $gitpath masterspringfix; 
 		findAppPath youtube-videos-service;
-		buildPackage youtube-videos-service $gitpath cloudfrontUrl-springversionFix;
+		buildPackage youtube-videos-service $gitpath masterspringfix; 
 		findAppPath testseries;
-		buildPackage testseries $gitpath cloudfrontUrl-springversionFix;;
+		buildPackage testseries $gitpath masterspringfix;; 
 	Video-Streaming-server)
 		findAppPath commons-parent;
 		buildPackage commons-parent $gitpath videostreaming;;
@@ -545,14 +545,10 @@ findDependency()
 	newcouponadmin)
 		findAppPath newcoupon;
                 buildPackage newcoupon $gitpath $brch;
-		#findAppPath coupon-entities;
-                #buildPackage coupon-entities $gitpath $brch;
-		#findAppPath coupon-commons;
-                #buildPackage coupon-commons $gitpath $brch;
 		findAppPath commons-parent;
 		buildPackage commons-parent $gitpath master;
 		findAppPath admin-panel-commons;
-		buildPackage admin-panel-commons $gitpath versionFix;;
+		buildPackage admin-panel-commons $gitpath masterspringfix;;
 	couponservice)
 		findAppPath commons-parent;
 		buildPackage commons-parent $gitpath master;

@@ -21,7 +21,6 @@ stg5="userauth-staging VideoStreamingServer-stag-env testseries-stag-env bigserv
 stg6="Adda247Unity-env-staging erpstaging franchise-stag-env search2prod";
 stg7="socialapi-staging stagingadda247";
 stg8="StoreElasticSearchStaging2 StoreElasticSearchStaging";
-stg9="wrd-sscadda-prod-env-1";
 
 
 

@@ -279,9 +279,9 @@ buildPackage()
 	fi
 	git pull origin $brnch
 	if [ "$customBuild" == true ];then
-		mvn clean install -Denv.name=$arg5
+		/usr/local/src/apache-maven/bin/mvn clean install -Denv.name=$arg5
 	else 
-		mvn clean install 
+		/usr/local/src/apache-maven/bin/mvn clean install 
 	fi
         if [[ $? -ne 0 ]]; then
                 echo -e "\033[33;5mBuild Failed. Check code again. Exiting\033[0m"
@@ -657,7 +657,7 @@ case  $appname in
                 fi
                 git pull origin $branch;
 		cp $gitHome/deployment-scripts/bigservices/pom.xml $gitHome/temp/servercp/;
-		mvn clean install;
+		/usr/local/src/apache-maven/bin/mvn clean install;
 		if [[ $? -ne 0 ]]; then
                 	echo "Build Failed. Check code again. Exiting"
                 	exit $?
@@ -709,7 +709,7 @@ case  $appname in
                 fi
 		git pull origin $brnch;
 		cp $gitHome/deployment-scripts/extraservices/pom.xml $gitHome/temp/servercp/;
-		mvn clean install;
+		/usr/local/src/apache-maven/bin/mvn clean install;
 	        if [[ $? -ne 0 ]]; then
                         echo "Build Failed. Check code again. Exiting"
                         exit $?

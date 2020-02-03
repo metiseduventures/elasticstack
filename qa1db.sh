@@ -12,7 +12,7 @@ case "$arg1" in
 esac
 
 
-qa1db="bigservicedb-qa1db video-streaming-qa1db user-qa1db extradb-qa1db storefront-qa1db";
+qa1db="adda-wordpress-prod-db bigservicedb-qa1db video-streaming-qa1db user-qa1db extradb-qa1db storefront-qa1db";
 
 #storefront-analytics-qa1db
 

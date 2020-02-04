@@ -51,15 +51,15 @@ fi
 noteit()
 {
 	mysql -u$dbuser -p$dbpass -h$dbhost $dbname -e "INSERT INTO $dbtable (\`time\`, \`appname\`, \`environment\`, \`branch\`, \`remark\`, \`user\`, \`isprod\`) VALUES (now(), '$appname', '$envName', '$branch','$msg','$user',false)";
- 	groupmsg=$appname" is being deployed to "$envName" from "$branch" branch.";	
-	python /home/ec2-user/devops/devops-bot.py "${groupmsg}";
+	groupmsg=$appname" is being deployed to "$envName" from "$branch" branch.";
+    python /home/ec2-user/devops/devops-bot.py "${groupmsg}";
 }
 
 verifyAppName()
 {
 	local app=$1;
 	case "$app" in
-		erp | userauth | bigservice | analytics | appInstall | contentadmin | franchise | mailingservice | pushservice | ranking | testseries | timeline | Video-Streaming-server | store-elastic-search | coupon-admin | couponservice | extraservice | socialapi | newcouponadmin )
+		erp | userauth | bigservice | analytics | appInstall | contentadmin | franchise | mailingservice | pushservice | ranking | testseries | timeline | Video-Streaming-server | store-elastic-search | coupon-admin | couponservice | extraservice | socialapi | newcouponadmin | ytsearch | newcouponservice )
 					;;
 		admin-panel-ui | storefront-user | storefront-admin )
 			if [ -z "$arg5" ]; then
@@ -136,6 +136,10 @@ findEnvName()
 		elif [ "$arg5" = "qa1" ]; then
 			envName="userauthqa1";
 		fi;;
+	ytsearch )
+		if [ "$args" = "staging" ]; then
+			envName="ytsearch-staging";
+		fi ;;
 	adda247 )
 			envName="adda247-stagingadda247";;
 	adda247-unity )
@@ -171,6 +175,10 @@ findEnvName()
 	newcouponadmin )
 		if [ "$arg5" = "staging" ]; then
 			envName="newcouponadminstaging";
+		fi;;	
+	newcouponservice )
+		if [ "$arg5" = "staging" ]; then
+			envName="newcouponservicestaging";
 		fi;;	
 	coupon-admin )
 		if [ "$arg5" = "staging" ]; then
@@ -347,6 +355,9 @@ findAppWarName()
 	newcouponadmin)
 		appwarname="coupon-admin";
 		appwarkey="in/careerpower/coupon/$appwarname/2.0.0/$appwarname-2.0.0.war";;
+	newcouponservice)
+		appwarname="coupon-service-web";
+		appwarkey="in/careerpower/coupon/$appwarname/2.0.0/$appwarname-2.0.0.war";;
 	couponservice)
 		appwarname="coupon-service-web";
 		appwarkey="in/careerpower/coupon/$appwarname/1.0.0/$appwarname-1.0.0.war";;
@@ -375,6 +386,8 @@ findAppPath()
 	case $app in
 	userauth)
 		gitpath=$gitHome"servercp/userauth";;
+        ytsearch)
+                gitpath=$gitHome"ytsearch";;
 	bigservice)
 		gitpath=$gitHome"deployment-scripts/bigservices";;
 	extraservice)
@@ -451,6 +464,8 @@ findAppPath()
 		gitpath=$gitHome"couponnew";;
 	newcouponadmin)
 		gitpath=$gitHome"couponnew/coupon-admin";;
+	newcouponservice)
+		gitpath=$gitHome"couponnew/coupon-service-web";;
 	couponservice)
 		gitpath=$gitHome"coupon/coupon-service-web";;
 	storefront-jpa-entities)
@@ -544,16 +559,25 @@ findDependency()
 		buildPackage admin-panel-commons $gitpath master;;
 	newcouponadmin)
 		findAppPath newcoupon;
-                buildPackage newcoupon $gitpath $brch;
+        buildPackage newcoupon $gitpath $brch;
 		findAppPath commons-parent;
 		buildPackage commons-parent $gitpath master;
 		findAppPath admin-panel-commons;
-		buildPackage admin-panel-commons $gitpath versionFix;;
+		buildPackage admin-panel-commons $gitpath masterspringfix;;
 	couponservice)
 		findAppPath commons-parent;
 		buildPackage commons-parent $gitpath master;
 		findAppPath coupon;
 		buildPackage coupon $gitpath $brch;;
+	newcouponservice)
+		findAppPath commons-parent;
+		buildPackage commons-parent $gitpath master;
+		findAppPath storefront-jpa-entities;
+        buildPackage storefront-jpa-entities $gitpath newcoupon;
+        findAppPath storefront-core;
+        buildPackage storefront-core $gitpath newcoupon;
+		findAppPath newcoupon;
+		buildPackage newcoupon $gitpath $brch;;
 	pushservice)
 		findAppPath commons-parent;
 		buildPackage commons-parent $gitpath master;
@@ -600,6 +624,38 @@ case  $appname in
 		bower install;
 		npm run build-prod;
 		aws s3 sync webapp/assets/  s3://adda247-storefront/ --profile prod;
+		exit 0;;
+	ytsearch)
+		echo "Building package $appname from $branch branch ";
+		env=$arg5;
+        findAppPath $appname;
+        cd $gitpath;
+        git stash;
+        git fetch;
+        git checkout $branch;
+        if [[ $? -ne 0 ]]; then
+        	echo "Branch does not exist. Run again. Exiting"
+        	exit $?
+        fi
+        git pull origin $branch;
+        buildtime=$(timestamp);
+		zip ../$appname.zip -x *.git* -r * .[^.]* ;
+		mv ../$appname.zip /home/ec2-user/.m2/repository/$appname-$branch-$msg-$buildtime.zip;
+		aws s3 sync /home/ec2-user/.m2/repository s3://adda247-builds-repo --exclude "*" --include "*.war" --include "*.zip" --profile s3user
+		find /home/ec2-user/.m2/repository/ -type f -name "*.zip" -exec rm -f {} \;
+
+		# create application version.
+
+		aws elasticbeanstalk create-application-version --application-name $appname --version-label "$appname-$branch-$msg-$buildtime" --description "automated build of $appname from $branch branch" --source-bundle S3Bucket="adda247-builds-repo",S3Key="$appname-$branch-$msg-$buildtime.zip";
+
+		findEnvName $appname $arg5;
+		echo $envName;
+                aws elasticbeanstalk update-environment --environment-name ytsearch-staging --version-label "$appname-$branch-$msg-$buildtime";
+                if [[ $? -ne 0 ]]; then
+                        echo "Environment Deploy Failed. Check again. Exiting";
+                        exit $?
+                fi
+                noteit ;
 		exit 0;;
 	unity)
 		echo "Building package $appname from $branch branch ";
@@ -682,10 +738,9 @@ case  $appname in
 		find /home/ec2-user/.m2/repository/ -type f -name "*.war" -exec rm -f {} \;
 		aws elasticbeanstalk create-application-version --application-name $appname --version-label "$appname-$branch-$msg-$buildtime" --description "automated build of $appname from $branch branch" --source-bundle S3Bucket="adda247-builds-repo",S3Key="$appwarname-$branch-$buildtime.zip";
                 aws elasticbeanstalk update-environment --environment-name bigservice-stag-env --version-label "$appname-$branch-$msg-$buildtime";
-		noteit;
-		exit 0;
-		
-	;;
+                noteit;
+                exit 0;
+                ;;
 	extraservice)
 		echo "Building package $appname from $brnch branch ";
 		cd $gitHome/deployment-scripts/extraservices;
@@ -709,11 +764,11 @@ case  $appname in
                 fi
 		git pull origin $brnch;
 		cp $gitHome/deployment-scripts/extraservices/pom.xml $gitHome/temp/servercp/;
-		mvn clean install;
-	        if [[ $? -ne 0 ]]; then
-                        echo "Build Failed. Check code again. Exiting"
-                        exit $?
-                fi
+		/usr/local/src/apache-maven/bin/mvn clean install;
+        if [[ $? -ne 0 ]]; then
+        	echo "Build Failed. Check code again. Exiting"
+            exit $?
+        fi
 		cp $gitHome/temp/servercp/useranalytics/useranalytics-service/target/useranalytics-service-1.0.0.war.original $gitHome/bundle/analytics.war;
 		cp $gitHome/temp/servercp/miscellaneous/miscellaneous-service/target/miscellaneous-service-1.0.0.war $gitHome/bundle/miscellaneous.war;
 		cp $gitHome/temp/servercp/appConfig/target/appConfig-1.0.0.war.original $gitHome/bundle/appConfig.war;
@@ -745,6 +800,8 @@ find /home/ec2-user/.m2/repository/ -type f -name "*.war" -exec rm -f {} \;
 
 if [ "$appname" = "newcouponadmin" ]; then
 	appnametwist="coupon-admin";
+elif [ "$appname" = "newcouponservice" ]; then
+    appnametwist="couponservice";
 else
 	appnametwist=$appname;
 fi
@@ -760,10 +817,10 @@ case "$arg5" in
 	staging1 | staging2 | stagingv | alpha | beta | qa1 | staging )
 		aws elasticbeanstalk update-environment --environment-name $envName --version-label "$appname-$branch-$msg-$buildtime";
 		if [[ $? -ne 0 ]]; then
-                	echo "Environment Deploy Failed. Check again. Exiting";
-                	exit $?
-        	fi
+        	echo "Environment Deploy Failed. Check again. Exiting";
+        	exit $?
+        fi
 		noteit ;;
         *)
-        echo "Please deploy new build with label $appname-$branch-$msg-$buildtime to  application manually";;
+        echo "Please deploy new build with label $appname-$branch-$msg-$buildtime to application manually";;
 esac

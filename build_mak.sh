@@ -4,33 +4,33 @@ arg2="$2";
 arg3="$3";
 arg4="$4";
 arg5="$5";
-    case "$arg1" in
-        -a | --appname )        
-                         	appname="$arg2"
-                                ;;
-        -h | --help )           echo "usage: build.sh -a applicationName [-b branchName]" 
-                                exit
-                                ;;
-        * )                     echo "usage: build.sh -a applicationName [-b branchName]"
-                                exit 1
+
+	case "$arg1" in
+		-a | --appname )        
+			appname="$arg2";;
+        -h | --help )
+        	echo "usage: build.sh -a applicationName [-b branchName]";
+            exit;;
+        * )
+        	echo "usage: build.sh -a applicationName [-b branchName]";
+            exit 1;
     esac
 
-if [ -z "$arg3" ]; then
-	branch=dev;
+	if [ -z "$arg3" ]; then
+		branch=dev;
 	elif [ "$arg3" != "-b" ];then
-		echo "usage: build.sh -a applicationName [-b branchName]"
-		exit 1
+		echo "usage: build.sh -a applicationName [-b branchName]";
+		exit 1;
 	elif [ -z "$arg4" ]; then
-			echo "usage: build.sh -a applicationName [-b branchName]"
-			exit 1
+		echo "usage: build.sh -a applicationName [-b branchName]";
+		exit 1;
 	else
-			branch="$arg4"
+		branch="$arg4";
 fi
 
 
 	 
 #Environment Variables
-#appname=$1;
 gitHome="/home/ec2-user/git/";
 msg="build-script-mak";
 user="devops";
@@ -47,70 +47,72 @@ if [ ! -z "$arg5" ];then
 fi
 
 #functions
-
 noteit()
 {
-	mysql -u$dbuser -p$dbpass -h$dbhost $dbname -e "INSERT INTO $dbtable (\`time\`, \`appname\`, \`environment\`, \`branch\`, \`remark\`, \`user\`, \`isprod\`) VALUES (now(), '$appname', '$envName', '$branch','$msg','$user',false)";
-	groupmsg=$appname" is being deployed to "$envName" from "$branch" branch.";
-    python /home/ec2-user/devops/devops-bot.py "${groupmsg}";
+	local prod="false";
+	if [ "$arg5" = "production" ]; then
+		prod="true";
+	fi
+	mysql -u$dbuser -p$dbpass -h$dbhost $dbname -e "INSERT INTO $dbtable (\`time\`, \`appname\`, \`environment\`, \`branch\`, \`remark\`, \`versionlabel\`,\`user\`, \`isprod\`, \`status\` ) VALUES (now(), '$appname', '$envName', '$branch','$msg','$appname-$branch-$msg-$buildtime','$user','$prod','started')";
+	groupmsg=$appname": Deployment of "$branch" branch started on "$envName".";
+	python /home/ec2-user/devops/devops-bot.py "${groupmsg}";
 }
 
 verifyAppName()
 {
 	local app=$1;
 	case "$app" in
-		erp | userauth | bigservice | analytics | appInstall | contentadmin | franchise | mailingservice | pushservice | ranking | testseries | timeline | Video-Streaming-server | store-elastic-search | coupon-admin | couponservice | extraservice | socialapi | newcouponadmin | ytsearch | newcouponservice )
-					;;
+		erp | userauth | bigservice | analytics | appInstall | contentadmin | franchise | mailingservice | pushservice | ranking | testseries | timeline | Video-Streaming-server | store-elastic-search | coupon-admin | couponservice | extraservice | socialapi | newcouponadmin | ytsearch | newcouponservice ) 
+		;;
+
 		admin-panel-ui | storefront-user | storefront-admin )
-			if [ -z "$arg5" ]; then
-				echo "You have not selected environment for which you are building\n usage: build.sh -a applicationName [-b branchName] environment"
+		if [ -z "$arg5" ]; then
+			echo "You have not selected environment for which you are building\n usage: build.sh -a applicationName [-b branchName] environment";
+			exit 1;
+		else
+			case "$arg5" in
+				staging1 | staging2 | stagingv | alpha | beta | qa1 )
+				customBuild=true;
+				;;
+				production)
+				;;
+				*)
+				echo "invalid environment (valid: staging1,staging2,stagingv,production)";
 				exit 1
-			else
-				case "$arg5" in
-					staging1 | staging2 | stagingv | alpha | beta | qa1 )
-						customBuild=true;
-						;;
-					production)
-						;;
-					*)
-					echo "invalid environment (valid: staging1,staging2,stagingv,production)"
-						exit 1
-				esac
-			fi
-				;;
+			esac
+		fi;;
+
 		unity ) 
-			if [ -z "$arg5" ]; then
-				echo "Making unity build for staging environment";
-				arg5="staging";
-			else 
-				case "$arg5" in
-					staging | production )
-						echo "making unity build using $arg5 properties";;
-					*)
-						echo "Invalid Argument No 5 | Valid Values [staging/production]";
-						exit 1
+		if [ -z "$arg5" ]; then
+			echo "Making unity build for staging environment";
+			arg5="staging";
+		else 
+			case "$arg5" in
+				staging | production )
+					echo "making unity build using $arg5 properties";;
+				*)
+					echo "Invalid Argument No 5 | Valid Values [staging/production]";
+					exit 1
 				esac
-			fi
-				;;
-                beta-store )
-                        if [ -z "$arg5" ]; then
-                                echo "Making beta-store build for staging environment";
-                                arg5="staging";
-                        else
-                                case "$arg5" in
-                                        staging )
+		fi;;
+		beta-store )
+        	if [ -z "$arg5" ]; then
+            	echo "Making beta-store build for staging environment";
+                arg5="staging";
+            else
+            	case "$arg5" in
+                	staging )
 						if [ -z "$tag" ]; then
 							echo "Tag not provided";
 							echo "usage : build.sh -a beta-store -b <branch> staing -t <tag>";
 							exit 1;
 						fi
-                                                echo "making unity build using $arg5 properties";;
-                                        *)
-                                                echo "Invalid Argument No 5 | Valid Values [staging/production]";
-                                                exit 1
-                                esac
-                        fi
-                                ;;
+						echo "making unity build using $arg5 properties";;
+                    *)
+                        echo "Invalid Argument No 5 | Valid Values [staging/production]";
+                        exit 1
+                esac
+            fi;;
 		*)
 			echo "Invalid application name. Application does not exist";
 			exit 1;;
@@ -120,19 +122,19 @@ verifyAppName()
  
 
 timestamp() {
-  date +"%d-%h_%H:%M:%S";
+	date +"%d-%h_%H:%M:%S";
 }
 
 
 
 findEnvName()
 {
-    	local app=$1;
-    	local variant=$2;
-    	case $app in
-    	userauth )
+    local app=$1;
+    local variant=$2;
+    case $app in
+    userauth )
 		if [ "$arg5" = "staging" ]; then
-            		envName="userauth-staging";
+        	envName="userauth-staging";
 		elif [ "$arg5" = "qa1" ]; then
 			envName="userauthqa1";
 		fi;;
@@ -141,9 +143,13 @@ findEnvName()
 			envName="ytsearch-staging";
 		fi ;;
 	adda247 )
-			envName="adda247-stagingadda247";;
+		if [ "$args" = "staging" ]; then
+			envName="adda247-stagingadda247";
+		fi ;;
 	adda247-unity )
-			envName="Adda247Unity-env-staging";;
+		if [ "$args" = "staging" ]; then
+			envName="Adda247Unity-env-staging";
+		fi ;;
 	admin-panel-ui )
 		if [ "$arg5" = "staging1" ] ;then
 			envName="stagingadminui";
@@ -194,7 +200,7 @@ findEnvName()
 		fi;;
 	erp )
 		if [ "$arg5" = "staging" ]; then
-          		envName="erpstaging";
+          	envName="erpstaging";
 		elif [ "$arg5" = "qa1" ]; then
 			envName="erpqa1";
 		fi;;
@@ -255,9 +261,17 @@ findEnvName()
 			envName="testseriesqa1";
 		fi;;
 	timeline )
-			envName="Timeline-stag-env";;
+		if [ "$arg5" = "staging" ]; then
+			envName="Timeline-stag-env";
+		elif [ "$arg5" = "qa1" ]; then
+			envName="timelineqa1";
+		fi;;
 	Video-Streaming-server )
-			envName="VideoStreamingServer-stag-env";;
+		if [ "$arg5" = "staging" ]; then
+			envName="VideoStreamingServer-stag-env";
+		elif [ "$arg5" = "qa1" ]; then
+			envName="videostreamingqa1";
+		fi;;
 	* )
  		echo "No Environment mapped for this";;
     	esac
@@ -275,15 +289,15 @@ buildPackage()
 		echo "Branch is not specified. Aborting"; exit 1;
 	fi
 	cd $repoPath
-        echo -e "\033[4;91mBuilding package $app from $brnch branch \033[0m";
+    echo -e "\033[4;91mBuilding package $app from $brnch branch \033[0m";
 	#drop unfinished changes
 	git stash  
 	# switch/checkout required branch
 	git fetch
 	git checkout $brnch
 	if [[ $? -ne 0 ]]; then
-    		echo "Branch does not exist. Run again. Exiting"
-    		exit $?
+    	echo "Branch does not exist. Run again. Exiting";
+    	exit $?
 	fi
 	git pull origin $brnch
 	if [ "$customBuild" == true ];then
@@ -291,8 +305,8 @@ buildPackage()
 	else 
 		/usr/local/src/apache-maven/bin/mvn clean install 
 	fi
-        if [[ $? -ne 0 ]]; then
-                echo -e "\033[33;5mBuild Failed. Check code again. Exiting\033[0m"
+    if [[ $? -ne 0 ]]; then
+    	echo -e "\033[33;5mBuild Failed. Check code again. Exiting\033[0m";
 		exit $?
 	fi
 }
@@ -386,8 +400,8 @@ findAppPath()
 	case $app in
 	userauth)
 		gitpath=$gitHome"servercp/userauth";;
-        ytsearch)
-                gitpath=$gitHome"ytsearch";;
+    ytsearch)
+        gitpath=$gitHome"ytsearch";;
 	bigservice)
 		gitpath=$gitHome"deployment-scripts/bigservices";;
 	extraservice)
@@ -506,15 +520,15 @@ findDependency()
 		buildPackage commons $gitpath master;;
 	storefront-core)
 		findAppPath commons;
-                buildPackage commons $gitpath master;;
+        buildPackage commons $gitpath master;;
 	franchise)
 		findAppPath franchise-theme;
 		buildPackage franchise-theme $gitpath $brch;;
 	storefront-user)
 		findAppPath commons;
-                buildPackage commons $gitpath master;
+        buildPackage commons $gitpath master;
 		findAppPath commons-parent;
-                buildPackage commons-parent $gitpath master;
+        buildPackage commons-parent $gitpath master;
 		findAppPath storefront-jpa-entities;
 		buildPackage storefront-jpa-entities $gitpath $brch;
 		findAppPath storefront-core;
@@ -525,27 +539,27 @@ findDependency()
 		findAppPath magazines-service;
 		buildPackage magazines-service $gitpath masterspringfix; 
 		findAppPath articles-service;
-		buildPackage articles-service $gitpath masterspringfix; 
+		buildPackage articles-service $gitpath masterspringfix;
 		findAppPath capsules-service;
-		buildPackage capsules-service $gitpath masterspringfix; 
+		buildPackage capsules-service $gitpath masterspringfix;
 		findAppPath currentaffairs-service;
 		buildPackage currentaffairs-service $gitpath masterspringfix;
 		findAppPath jobalerts-service;
-		buildPackage jobalerts-service $gitpath masterspringfix; 
+		buildPackage jobalerts-service $gitpath masterspringfix;
 		findAppPath youtube-videos-service;
-		buildPackage youtube-videos-service $gitpath masterspringfix; 
+		buildPackage youtube-videos-service $gitpath masterspringfix;
 		findAppPath testseries;
-		buildPackage testseries $gitpath masterspringfix;; 
+		buildPackage testseries $gitpath masterspringfix;;
 	Video-Streaming-server)
 		findAppPath commons-parent;
 		buildPackage commons-parent $gitpath videostreaming;;
 	store-elastic-search)
 		findAppPath commons;
-                buildPackage commons $gitpath master;
+        buildPackage commons $gitpath master;
 		findAppPath commons-parent;
-                buildPackage commons-parent $gitpath master;
-                findAppPath storefront-jpa-entities;
-                buildPackage storefront-jpa-entities $gitpath master;		
+        buildPackage commons-parent $gitpath master;
+        findAppPath storefront-jpa-entities;
+        buildPackage storefront-jpa-entities $gitpath master;		
 		findAppPath storefront-core;
 		buildPackage storefront-core $gitpath master;
 		findAppPath commons-parent;
@@ -558,28 +572,28 @@ findDependency()
 		findAppPath admin-panel-commons;
 		buildPackage admin-panel-commons $gitpath master;;
 	newcouponadmin)
-		findAppPath newcoupon;
-       		buildPackage newcoupon $gitpath $brch;
 		findAppPath commons-parent;
 		buildPackage commons-parent $gitpath master;
 		findAppPath storefront-jpa-entities;
-                buildPackage storefront-jpa-entities $gitpath newcoupon;
-                findAppPath storefront-core;
-                buildPackage storefront-core $gitpath newcoupon;
+        buildPackage storefront-jpa-entities $gitpath newcoupon;
+        findAppPath storefront-core;
+        buildPackage storefront-core $gitpath newcoupon;
 		findAppPath admin-panel-commons;
-		buildPackage admin-panel-commons $gitpath masterspringfix;;
+		buildPackage admin-panel-commons $gitpath masterspringfix;
+		findAppPath newcoupon;
+        buildPackage newcoupon $gitpath $brch;;
 	couponservice)
 		findAppPath commons-parent;
-		buildPackage commons-parent $gitpath master;
+		buildPackage commons-parent $gitpath master;	
 		findAppPath coupon;
 		buildPackage coupon $gitpath $brch;;
 	newcouponservice)
 		findAppPath commons-parent;
 		buildPackage commons-parent $gitpath master;
 		findAppPath storefront-jpa-entities;
-        	buildPackage storefront-jpa-entities $gitpath newcoupon;
-        	findAppPath storefront-core;
-        	buildPackage storefront-core $gitpath newcoupon;
+        buildPackage storefront-jpa-entities $gitpath newcoupon;
+        findAppPath storefront-core;
+        buildPackage storefront-core $gitpath newcoupon;
 		findAppPath newcoupon;
 		buildPackage newcoupon $gitpath $brch;;
 	pushservice)
@@ -599,8 +613,7 @@ findDependency()
 		buildPackage storefront $gitpath $brch;;
 	testseries)
 		findAppPath commons-parent;
-		buildPackage commons-parent $gitpath master;;
-				
+		buildPackage commons-parent $gitpath master;;			
 	*)
 		echo "No Dependency packages needed";;
 	esac
@@ -610,20 +623,20 @@ findDependency()
 verifyAppName $appname;
 
 case  $appname in
-        beta-store)
+    beta-store)
 		echo "Building package $appname from $branch branch ";
 		env=$arg5;
-                findAppPath $appname;
-                cd $gitpath;
-                git stash;
-                git fetch --all --tags --prune ;
-                git checkout tags/$tag;	
+    	findAppPath $appname;
+    	cd $gitpath;
+    	git stash;
+        git fetch --all --tags --prune ;
+        git checkout tags/$tag;	
 		if [[ $? -ne 0 ]]; then
-                        echo "Branch does not exist. Run again. Exiting"
-                        exit $?
-                fi
-                git pull origin $branch;
-                buildtime=$(timestamp);
+    	   	echo "Branch does not exist. Run again. Exiting"
+            exit $?
+        fi
+        git pull origin $branch;
+        buildtime=$(timestamp);
 		npm install;
 		bower install;
 		npm run build-prod;
@@ -649,17 +662,15 @@ case  $appname in
 		find /home/ec2-user/.m2/repository/ -type f -name "*.zip" -exec rm -f {} \;
 
 		# create application version.
-
 		aws elasticbeanstalk create-application-version --application-name $appname --version-label "$appname-$branch-$msg-$buildtime" --description "automated build of $appname from $branch branch" --source-bundle S3Bucket="adda247-builds-repo",S3Key="$appname-$branch-$msg-$buildtime.zip";
-
 		findEnvName $appname $arg5;
 		echo $envName;
-                aws elasticbeanstalk update-environment --environment-name ytsearch-staging --version-label "$appname-$branch-$msg-$buildtime";
-                if [[ $? -ne 0 ]]; then
-                        echo "Environment Deploy Failed. Check again. Exiting";
-                        exit $?
-                fi
-                noteit ;
+        aws elasticbeanstalk update-environment --environment-name ytsearch-staging --version-label "$appname-$branch-$msg-$buildtime";
+        if [[ $? -ne 0 ]]; then
+        	echo "Environment Deploy Failed. Check again. Exiting";
+            exit $?
+        fi
+        noteit ;
 		exit 0;;
 	unity)
 		echo "Building package $appname from $branch branch ";
@@ -669,10 +680,10 @@ case  $appname in
 		git stash;
 		git fetch;
 		git checkout $branch;
-	        if [[ $? -ne 0 ]]; then
-	                echo "Branch does not exist. Run again. Exiting"
-        	        exit $?
-       		fi
+	    if [[ $? -ne 0 ]]; then
+	    	echo "Branch does not exist. Run again. Exiting"
+        	exit $?
+       	fi
 		git pull origin $branch;
 		buildtime=$(timestamp);
 		npm i
@@ -685,43 +696,45 @@ case  $appname in
 		cd build/
 		zip -x *.git* -r adda247-unity * .[^.]*
 		mv adda247-unity.zip  /home/ec2-user/.m2/repository/$appname-$branch-$env-$buildtime.zip;
-                aws s3 sync /home/ec2-user/.m2/repository s3://adda247-builds-repo --exclude "*" --include "*.war" --include "*.zip" --profile s3user;
-                rm -f /home/ec2-user/.m2/repository/*.zip;
-                rm -f /home/ec2-user/.m2/repository/*.war;
-                aws elasticbeanstalk create-application-version --application-name adda247-$appname --version-label "$appname-$branch-$env-$buildtime" --description "automated build of $appname from $branch branch using $env configuration" --source-bundle S3Bucket="adda247-builds-repo",S3Key="$appname-$branch-$env-$buildtime.zip";
-                aws elasticbeanstalk update-environment --environment-name Adda247Unity-env-staging --version-label "$appname-$branch-$env-$buildtime";
-		exit 0;
-
-		;;
-		
+        aws s3 sync /home/ec2-user/.m2/repository s3://adda247-builds-repo --exclude "*" --include "*.war" --include "*.zip" --profile s3user;
+        rm -f /home/ec2-user/.m2/repository/*.zip;
+        rm -f /home/ec2-user/.m2/repository/*.war;
+        aws elasticbeanstalk create-application-version --application-name adda247-$appname --version-label "$appname-$branch-$env-$buildtime" --description "automated build of $appname from $branch branch using $env configuration" --source-bundle S3Bucket="adda247-builds-repo",S3Key="$appname-$branch-$env-$buildtime.zip";
+        aws elasticbeanstalk update-environment --environment-name Adda247Unity-env-staging --version-label "$appname-$branch-$env-$buildtime";
+		if [[ $? -ne 0 ]]; then
+        	echo "Environment Deploy Failed. Check again. Exiting";
+            exit $?
+        fi
+        noteit ;
+		exit 0;;	
 	bigservice)
-                echo "Building package $appname from $branch branch ";
-                cd $gitHome/deployment-scripts/bigservices;
-                git stash;
-        	git fetch;
-	        git checkout dev;
-                if [[ $? -ne 0 ]]; then
-                        echo "Branch does not exist. Run again. Exiting"
-                        exit $?
-                fi
-                git pull origin dev;
+        echo "Building package $appname from $branch branch ";
+        cd $gitHome/deployment-scripts/bigservices;
+        git stash;
+        git fetch;
+	    git checkout dev;
+        if [[ $? -ne 0 ]]; then
+        	echo "Branch does not exist. Run again. Exiting";
+            exit $?
+        fi
+        git pull origin dev;
 		rm -rf $gitHome/{temp,bundle};
 		mkdir $gitHome/{temp,bundle};
 		cd $gitHome/temp;
 		git clone git@github.com:metiseduventures/servercp.git;
-                cd $gitHome/temp/servercp;
-                git checkout $branch;
-                if [[ $? -ne 0 ]]; then
-                        echo "Branch does not exist. Run again. Exiting"
-                        exit $?
-                fi
-                git pull origin $branch;
+        cd $gitHome/temp/servercp;
+        git checkout $branch;
+        if [[ $? -ne 0 ]]; then
+        	echo "Branch does not exist. Run again. Exiting";
+            exit $?
+        fi
+        git pull origin $branch;
 		cp $gitHome/deployment-scripts/bigservices/pom.xml $gitHome/temp/servercp/;
 		/usr/local/src/apache-maven/bin/mvn clean install;
 		if [[ $? -ne 0 ]]; then
-                	echo "Build Failed. Check code again. Exiting"
-                	exit $?
-        	fi
+        	echo "Build Failed. Check code again. Exiting";
+            exit $?
+        fi
 		cp $gitHome/temp/servercp/ebooks/ebooks-service/target/ebooks-service-1.0.0.war.original $gitHome/bundle/ebooks.war;
 		cp $gitHome/temp/servercp/currentaffairs/currentaffairs-wrapper/target/currentaffairs-wrapper-1.0.0.war.original $gitHome/bundle/currentaffairs.war;
 		cp $gitHome/temp/servercp/testseries/testseries-wrapper/target/testseries-wrapper-1.0.0.war.original $gitHome/bundle/testseries.war;
@@ -741,10 +754,13 @@ case  $appname in
 		aws s3 sync /home/ec2-user/.m2/repository s3://adda247-builds-repo --exclude "*" --include "*.war" --include "*.zip" --profile s3user;
 		find /home/ec2-user/.m2/repository/ -type f -name "*.war" -exec rm -f {} \;
 		aws elasticbeanstalk create-application-version --application-name $appname --version-label "$appname-$branch-$msg-$buildtime" --description "automated build of $appname from $branch branch" --source-bundle S3Bucket="adda247-builds-repo",S3Key="$appwarname-$branch-$buildtime.zip";
-                aws elasticbeanstalk update-environment --environment-name bigservice-stag-env --version-label "$appname-$branch-$msg-$buildtime";
-                noteit;
-                exit 0;
-                ;;
+        aws elasticbeanstalk update-environment --environment-name bigservice-stag-env --version-label "$appname-$branch-$msg-$buildtime";
+        if [[ $? -ne 0 ]]; then
+        	echo "Environment Deploy Failed. Check again. Exiting";
+            exit $?
+        fi
+        noteit;
+        exit 0;;
 	extraservice)
 		echo "Building package $appname from $brnch branch ";
 		cd $gitHome/deployment-scripts/extraservices;
@@ -752,8 +768,8 @@ case  $appname in
 		git fetch;
 		git checkout dev;
 		if [[ $? -ne 0 ]]; then
-    			echo "Branch does not exist. Run again. Exiting"
-    			exit $?
+    		echo "Branch does not exist. Run again. Exiting";
+    		exit $?
 		fi
 		git pull origin $brnch;
 		rm -rf $gitHome/{temp,bundle};
@@ -762,15 +778,15 @@ case  $appname in
 		git clone git@github.com:metiseduventures/servercp.git;
 		cd $gitHome/temp/servercp;
 		git checkout $branch;
-                if [[ $? -ne 0 ]]; then
-                        echo "Branch does not exist. Run again. Exiting"
-                        exit $?
-                fi
+        if [[ $? -ne 0 ]]; then
+        	echo "Branch does not exist. Run again. Exiting";
+            exit $?
+        fi
 		git pull origin $brnch;
 		cp $gitHome/deployment-scripts/extraservices/pom.xml $gitHome/temp/servercp/;
 		/usr/local/src/apache-maven/bin/mvn clean install;
         if [[ $? -ne 0 ]]; then
-        	echo "Build Failed. Check code again. Exiting"
+        	echo "Build Failed. Check code again. Exiting";
             exit $?
         fi
 		cp $gitHome/temp/servercp/useranalytics/useranalytics-service/target/useranalytics-service-1.0.0.war.original $gitHome/bundle/analytics.war;
@@ -781,12 +797,10 @@ case  $appname in
 		buildtime=$(timestamp);
 		findAppWarName $appname;
 		zip -r extraservice-$branch.zip appConfig.war analytics.war miscellaneous.war paymentstatus.war 
-		cp $gitHome/bundle/extraservice-$branch.zip /home/ec2-user/.m2/repository/$appwarname-$branch-$buildtime.war;
- 	;;		
+		cp $gitHome/bundle/extraservice-$branch.zip /home/ec2-user/.m2/repository/$appwarname-$branch-$buildtime.war;;		
 	*)
 		#build dependency packages 
 		findDependency $appname $branch;
-		
 		#main package build
 		findAppPath $appname;
 		buildPackage $appname $gitpath $branch;
@@ -801,7 +815,6 @@ aws s3 sync /home/ec2-user/.m2/repository s3://adda247-builds-repo --exclude "*"
 find /home/ec2-user/.m2/repository/ -type f -name "*.war" -exec rm -f {} \;
 
 # create application version 
-
 if [ "$appname" = "newcouponadmin" ]; then
 	appnametwist="coupon-admin";
 elif [ "$appname" = "newcouponservice" ]; then
@@ -810,19 +823,16 @@ else
 	appnametwist=$appname;
 fi
 
-
 aws elasticbeanstalk create-application-version --application-name $appnametwist --version-label "$appname-$branch-$msg-$buildtime" --description "automated build of $appname from $branch branch" --source-bundle S3Bucket="adda247-builds-repo",S3Key="$appwarname-$branch-$buildtime.war";
-
 # update application when staging
 
-findEnvName $appname $arg5
-
+findEnvName $appname $arg5;
 case "$arg5" in
 	staging1 | staging2 | stagingv | alpha | beta | qa1 | staging )
 		aws elasticbeanstalk update-environment --environment-name $envName --version-label "$appname-$branch-$msg-$buildtime";
-        if [[ $? -ne 0 ]]; then
+		if [[ $? -ne 0 ]]; then
         	echo "Environment Deploy Failed. Check again. Exiting";
-            exit $?
+        	exit $?
         fi
 		noteit ;;
         *)

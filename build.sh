@@ -50,10 +50,12 @@ fi
 noteit()
 {
 	local prod="false";
+	local sts="started";
 	if [ "$arg5" = "production" ]; then
 		prod="true";
+		sts="manual";
 	fi
-	mysql -u$dbuser -p$dbpass -h$dbhost $dbname -e "INSERT INTO $dbtable (\`time\`, \`appname\`, \`environment\`, \`branch\`, \`remark\`, \`versionlabel\`,\`user\`, \`isprod\`, \`status\` ) VALUES (now(), '$appname', '$envName', '$branch','$msg','$appname-$branch-$msg-$buildtime','$user','$prod','started')";
+	mysql -u$dbuser -p$dbpass -h$dbhost $dbname -e "INSERT INTO $dbtable (\`time\`, \`appname\`, \`environment\`, \`branch\`, \`remark\`, \`versionlabel\`,\`user\`, \`isprod\`, \`status\` ) VALUES (now(), '$appname', '$envName', '$branch','$msg','$appname-$branch-$msg-$buildtime','$user','$prod','$sts')";
 	groupmsg=$appname": Deployment of "$branch" branch started on "$envName".";
 	python /home/ec2-user/devops/devops-bot.py "${groupmsg}";
 }

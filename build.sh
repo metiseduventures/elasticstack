@@ -559,23 +559,27 @@ findDependency()
 		buildPackage admin-panel-commons $gitpath master;;
 	newcouponadmin)
 		findAppPath newcoupon;
-        buildPackage newcoupon $gitpath $brch;
+        	buildPackage newcoupon $gitpath $brch;
 		findAppPath commons-parent;
 		buildPackage commons-parent $gitpath master;
+		findAppPath storefront-jpa-entities;
+                buildPackage storefront-jpa-entities $gitpath newcoupon;
+                findAppPath storefront-core;
+                buildPackage storefront-core $gitpath newcoupon;
 		findAppPath admin-panel-commons;
 		buildPackage admin-panel-commons $gitpath masterspringfix;;
 	couponservice)
 		findAppPath commons-parent;
-		buildPackage commons-parent $gitpath master;
+		buildPackage commons-parent $gitpath master;	
 		findAppPath coupon;
 		buildPackage coupon $gitpath $brch;;
 	newcouponservice)
 		findAppPath commons-parent;
 		buildPackage commons-parent $gitpath master;
 		findAppPath storefront-jpa-entities;
-        buildPackage storefront-jpa-entities $gitpath newcoupon;
-        findAppPath storefront-core;
-        buildPackage storefront-core $gitpath newcoupon;
+        	buildPackage storefront-jpa-entities $gitpath newcoupon;
+        	findAppPath storefront-core;
+        	buildPackage storefront-core $gitpath newcoupon;
 		findAppPath newcoupon;
 		buildPackage newcoupon $gitpath $brch;;
 	pushservice)

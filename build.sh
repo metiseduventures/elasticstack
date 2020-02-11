@@ -554,7 +554,7 @@ findDependency()
 		buildPackage testseries $gitpath master;;
 	Video-Streaming-server)
 		findAppPath commons-parent;
-		buildPackage commons-parent $gitpath videostreaming;;
+		buildPackage commons-parent $gitpath master;;
 	store-elastic-search)
 		findAppPath commons;
         buildPackage commons $gitpath master;

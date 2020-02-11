@@ -23,7 +23,6 @@ stg7="stagingadda247 newcouponadminstaging newcouponservicestaging ytsearch-stag
 stg8="StoreElasticSearchStaging2 StoreElasticSearchStaging";
 
 
-
 for i in $stg1 $stg4 $stg5 $stg7 
 do
 	echo "Fetching autoscaling groups of environments: $i";
@@ -33,4 +32,18 @@ do
 	groupmsg="Triggering "$action" on "$i;
         python /home/ec2-user/devops/devops-bot.py "${groupmsg}";
 	aws autoscaling update-auto-scaling-group --auto-scaling-group-name $ASG --min-size $size --max-size $size;
+done
+
+stgmum1="stagingdoubts socialclientstaging";
+
+
+for i in $stgmum1
+do
+        echo "Fetching autoscaling groups of environments: $i";
+        asg="$(aws elasticbeanstalk describe-environment-resources --environment-name $i --output=text --profile mumbai)";
+        ASG=`echo "${asg}" | awk -F"\t" '$1=="AUTOSCALINGGROUPS" {print $2}'`;
+        echo "Triggering $action on auto scaling group $ASG";
+        groupmsg="Triggering "$action" on "$i;
+        python /home/ec2-user/devops/devops-bot.py "${groupmsg}";
+        aws autoscaling update-auto-scaling-group --auto-scaling-group-name $ASG --min-size $size --max-size $size --profile mumbai;
 done

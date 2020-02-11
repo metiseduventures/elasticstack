@@ -522,15 +522,15 @@ findDependency()
 		buildPackage commons $gitpath master;;
 	storefront-core)
 		findAppPath commons;
-        buildPackage commons $gitpath master;;
+        	buildPackage commons $gitpath master;;
 	franchise)
 		findAppPath franchise-theme;
 		buildPackage franchise-theme $gitpath $brch;;
 	storefront-user)
 		findAppPath commons;
-        buildPackage commons $gitpath master;
+        	buildPackage commons $gitpath master;
 		findAppPath commons-parent;
-        buildPackage commons-parent $gitpath master;
+        	buildPackage commons-parent $gitpath master;
 		findAppPath storefront-jpa-entities;
 		buildPackage storefront-jpa-entities $gitpath $brch;
 		findAppPath storefront-core;
@@ -557,11 +557,11 @@ findDependency()
 		buildPackage commons-parent $gitpath master;;
 	store-elastic-search)
 		findAppPath commons;
-        buildPackage commons $gitpath master;
+        	buildPackage commons $gitpath master;
 		findAppPath commons-parent;
-        buildPackage commons-parent $gitpath master;
-        findAppPath storefront-jpa-entities;
-        buildPackage storefront-jpa-entities $gitpath master;		
+        	buildPackage commons-parent $gitpath master;
+        	findAppPath storefront-jpa-entities;
+        	buildPackage storefront-jpa-entities $gitpath master;		
 		findAppPath storefront-core;
 		buildPackage storefront-core $gitpath master;
 		findAppPath commons-parent;
@@ -577,13 +577,13 @@ findDependency()
 		findAppPath commons-parent;
 		buildPackage commons-parent $gitpath master;
 		findAppPath storefront-jpa-entities;
-        buildPackage storefront-jpa-entities $gitpath newcoupon;
-        findAppPath storefront-core;
-        buildPackage storefront-core $gitpath newcoupon;
+        	buildPackage storefront-jpa-entities $gitpath newcoupon;
+        	findAppPath storefront-core;
+        	buildPackage storefront-core $gitpath newcoupon;
 		findAppPath admin-panel-commons;
 		buildPackage admin-panel-commons $gitpath masterspringfix;
 		findAppPath newcoupon;
-        buildPackage newcoupon $gitpath $brch;;
+        	buildPackage newcoupon $gitpath $brch;;
 	couponservice)
 		findAppPath commons-parent;
 		buildPackage commons-parent $gitpath master;	
@@ -593,9 +593,9 @@ findDependency()
 		findAppPath commons-parent;
 		buildPackage commons-parent $gitpath master;
 		findAppPath storefront-jpa-entities;
-        buildPackage storefront-jpa-entities $gitpath newcoupon;
-        findAppPath storefront-core;
-        buildPackage storefront-core $gitpath newcoupon;
+       		buildPackage storefront-jpa-entities $gitpath newcoupon;
+        	findAppPath storefront-core;
+        	buildPackage storefront-core $gitpath newcoupon;
 		findAppPath newcoupon;
 		buildPackage newcoupon $gitpath $brch;;
 	pushservice)
@@ -756,13 +756,19 @@ case  $appname in
 		aws s3 sync /home/ec2-user/.m2/repository s3://adda247-builds-repo --exclude "*" --include "*.war" --include "*.zip" --profile s3user;
 		find /home/ec2-user/.m2/repository/ -type f -name "*.war" -exec rm -f {} \;
 		aws elasticbeanstalk create-application-version --application-name $appname --version-label "$appname-$branch-$msg-$buildtime" --description "automated build of $appname from $branch branch" --source-bundle S3Bucket="adda247-builds-repo",S3Key="$appwarname-$branch-$buildtime.zip";
-        aws elasticbeanstalk update-environment --environment-name bigservice-stag-env --version-label "$appname-$branch-$msg-$buildtime";
-        if [[ $? -ne 0 ]]; then
-        	echo "Environment Deploy Failed. Check again. Exiting";
-            exit $?
-        fi
-        noteit;
-        exit 0;;
+        	findEnvName $appname $arg5;
+		case "$arg5" in
+        		staging )
+                		aws elasticbeanstalk update-environment --environment-name $envName --version-label "$appname-$branch-$msg-$buildtime";
+                		if [[ $? -ne 0 ]]; then
+                			echo "Environment Deploy Failed. Check again. Exiting";
+                		exit $?
+        			fi
+                		noteit ;;
+        		*)
+        		echo "Please deploy new build with label $appname-$branch-$msg-$buildtime to application manually";;
+		esac
+		exit 0;;
 	extraservice)
 		echo "Building package $appname from $brnch branch ";
 		cd $gitHome/deployment-scripts/extraservices;

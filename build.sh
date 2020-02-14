@@ -252,7 +252,7 @@ findEnvName()
 		elif [ "$arg5" = "staging2" ]; then
 			envName="stagingstoreuser2";
 		elif [ "$arg5" = "stagingv" ]; then
-			envName="stagingstoreuserv";
+			envName="stagingstoreuser-v";
 		elif [ "$arg5" = "qa1" ]; then
 			envName="storefrontuserqa1";
 		fi;;
@@ -472,6 +472,8 @@ findAppPath()
 		gitpath=$gitHome"coupon";;
 	coupon-admin)
 		gitpath=$gitHome"coupon/coupon-admin";;
+	couponadmin)
+		gitpath=$gitHome"couponnew/couponadmin";;
 	coupon-entities)
 		gitpath=$gitHome"couponnew/coupon-entities";;
 	coupon-commons)
@@ -577,9 +579,9 @@ findDependency()
 		findAppPath commons-parent;
 		buildPackage commons-parent $gitpath master;
 		findAppPath storefront-jpa-entities;
-        	buildPackage storefront-jpa-entities $gitpath newcoupon;
+        	buildPackage storefront-jpa-entities $gitpath master;
         	findAppPath storefront-core;
-        	buildPackage storefront-core $gitpath newcoupon;
+        	buildPackage storefront-core $gitpath master;
 		findAppPath admin-panel-commons;
 		buildPackage admin-panel-commons $gitpath masterspringfix;
 		findAppPath newcoupon;

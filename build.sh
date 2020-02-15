@@ -368,8 +368,11 @@ findAppWarName()
 	coupon-admin)
 		appwarname="coupon-admin";
 		appwarkey="in/careerpower/coupon/$appwarname/1.0.0/$appwarname-1.0.0.war";;
+	couponadmin)
+		appwarname="couponadmin";
+		appwarkey="in/careerpower/coupon/$appwarname/1.0.0/$appwarname-1.0.0.war";;
 	newcouponadmin)
-		appwarname="coupon-admin";
+		appwarname="couponadmin";
 		appwarkey="in/careerpower/coupon/$appwarname/2.0.0/$appwarname-2.0.0.war";;
 	newcouponservice)
 		appwarname="coupon-service-web";

@@ -375,7 +375,7 @@ findAppWarName()
 		appwarname="couponadmin";
 		appwarkey="in/careerpower/coupon/$appwarname/2.0.0/$appwarname-2.0.0.war";;
 	newcouponservice)
-		appwarname="coupon-service-web";
+		appwarname="couponservice";
 		appwarkey="in/careerpower/coupon/$appwarname/2.0.0/$appwarname-2.0.0.war";;
 	couponservice)
 		appwarname="coupon-service-web";
@@ -479,14 +479,14 @@ findAppPath()
 		gitpath=$gitHome"couponnew/couponadmin";;
 	coupon-entities)
 		gitpath=$gitHome"couponnew/coupon-entities";;
-	coupon-commons)
-		gitpath=$gitHome"couponnew/coupon-commons";;
+	couponcommons)
+		gitpath=$gitHome"couponnew/couponcommons";;
 	newcoupon)
 		gitpath=$gitHome"couponnew";;
 	newcouponadmin)
 		gitpath=$gitHome"couponnew/coupon-admin";;
 	newcouponservice)
-		gitpath=$gitHome"couponnew/coupon-service-web";;
+		gitpath=$gitHome"couponnew/couponservice";;
 	couponservice)
 		gitpath=$gitHome"coupon/coupon-service-web";;
 	storefront-jpa-entities)
@@ -598,9 +598,9 @@ findDependency()
 		findAppPath commons-parent;
 		buildPackage commons-parent $gitpath master;
 		findAppPath storefront-jpa-entities;
-       		buildPackage storefront-jpa-entities $gitpath newcoupon;
+       		buildPackage storefront-jpa-entities $gitpath master;
         	findAppPath storefront-core;
-        	buildPackage storefront-core $gitpath newcoupon;
+        	buildPackage storefront-core $gitpath master;
 		findAppPath newcoupon;
 		buildPackage newcoupon $gitpath $brch;;
 	pushservice)
@@ -630,20 +630,20 @@ findDependency()
 verifyAppName $appname;
 
 case  $appname in
-    beta-store)
+	beta-store)
 		echo "Building package $appname from $branch branch ";
 		env=$arg5;
-    	findAppPath $appname;
-    	cd $gitpath;
-    	git stash;
-        git fetch --all --tags --prune ;
-        git checkout tags/$tag;	
+	    	findAppPath $appname;
+	    	cd $gitpath;
+	    	git stash;
+        	git fetch --all --tags --prune ;
+	        git checkout tags/$tag;	
 		if [[ $? -ne 0 ]]; then
-    	   	echo "Branch does not exist. Run again. Exiting"
-            exit $?
-        fi
-        git pull origin $branch;
-        buildtime=$(timestamp);
+    			echo "Branch does not exist. Run again. Exiting"
+        		exit $?
+	        fi
+		git pull origin $branch;
+	        buildtime=$(timestamp);
 		npm install;
 		bower install;
 		npm run build-prod;
@@ -652,17 +652,17 @@ case  $appname in
 	ytsearch)
 		echo "Building package $appname from $branch branch ";
 		env=$arg5;
-        findAppPath $appname;
-        cd $gitpath;
-        git stash;
-        git fetch;
-        git checkout $branch;
-        if [[ $? -ne 0 ]]; then
-        	echo "Branch does not exist. Run again. Exiting"
-        	exit $?
-        fi
-        git pull origin $branch;
-        buildtime=$(timestamp);
+	        findAppPath $appname;
+	        cd $gitpath;
+	        git stash;
+	        git fetch;
+	        git checkout $branch;
+	        if [[ $? -ne 0 ]]; then
+        		echo "Branch does not exist. Run again. Exiting"
+        		exit $?
+     		fi
+       		git pull origin $branch;
+		buildtime=$(timestamp);
 		zip ../$appname.zip -x *.git* -r * .[^.]* ;
 		mv ../$appname.zip /home/ec2-user/.m2/repository/$appname-$branch-$msg-$buildtime.zip;
 		aws s3 sync /home/ec2-user/.m2/repository s3://adda247-builds-repo --exclude "*" --include "*.war" --include "*.zip" --profile s3user
@@ -672,12 +672,12 @@ case  $appname in
 		aws elasticbeanstalk create-application-version --application-name $appname --version-label "$appname-$branch-$msg-$buildtime" --description "automated build of $appname from $branch branch" --source-bundle S3Bucket="adda247-builds-repo",S3Key="$appname-$branch-$msg-$buildtime.zip";
 		findEnvName $appname $arg5;
 		echo $envName;
-        aws elasticbeanstalk update-environment --environment-name ytsearch-staging --version-label "$appname-$branch-$msg-$buildtime";
-        if [[ $? -ne 0 ]]; then
-        	echo "Environment Deploy Failed. Check again. Exiting";
-            exit $?
-        fi
-        noteit ;
+        	aws elasticbeanstalk update-environment --environment-name ytsearch-staging --version-label "$appname-$branch-$msg-$buildtime";
+        	if [[ $? -ne 0 ]]; then
+        		echo "Environment Deploy Failed. Check again. Exiting";
+            		exit $?
+        	fi
+ 	        noteit ;
 		exit 0;;
 	unity)
 		echo "Building package $appname from $branch branch ";
@@ -687,10 +687,10 @@ case  $appname in
 		git stash;
 		git fetch;
 		git checkout $branch;
-	    if [[ $? -ne 0 ]]; then
-	    	echo "Branch does not exist. Run again. Exiting"
-        	exit $?
-       	fi
+	    	if [[ $? -ne 0 ]]; then
+	    		echo "Branch does not exist. Run again. Exiting"
+        		exit $?
+  	     	fi
 		git pull origin $branch;
 		buildtime=$(timestamp);
 		npm i
@@ -703,45 +703,45 @@ case  $appname in
 		cd build/
 		zip -x *.git* -r adda247-unity * .[^.]*
 		mv adda247-unity.zip  /home/ec2-user/.m2/repository/$appname-$branch-$env-$buildtime.zip;
-        aws s3 sync /home/ec2-user/.m2/repository s3://adda247-builds-repo --exclude "*" --include "*.war" --include "*.zip" --profile s3user;
-        rm -f /home/ec2-user/.m2/repository/*.zip;
-        rm -f /home/ec2-user/.m2/repository/*.war;
-        aws elasticbeanstalk create-application-version --application-name adda247-$appname --version-label "$appname-$branch-$env-$buildtime" --description "automated build of $appname from $branch branch using $env configuration" --source-bundle S3Bucket="adda247-builds-repo",S3Key="$appname-$branch-$env-$buildtime.zip";
-        aws elasticbeanstalk update-environment --environment-name Adda247Unity-env-staging --version-label "$appname-$branch-$env-$buildtime";
+        	aws s3 sync /home/ec2-user/.m2/repository s3://adda247-builds-repo --exclude "*" --include "*.war" --include "*.zip" --profile s3user;
+        	rm -f /home/ec2-user/.m2/repository/*.zip;
+       		rm -f /home/ec2-user/.m2/repository/*.war;
+        	aws elasticbeanstalk create-application-version --application-name adda247-$appname --version-label "$appname-$branch-$env-$buildtime" --description "automated build of $appname from $branch branch using $env configuration" --source-bundle S3Bucket="adda247-builds-repo",S3Key="$appname-$branch-$env-$buildtime.zip";
+        	aws elasticbeanstalk update-environment --environment-name Adda247Unity-env-staging --version-label "$appname-$branch-$env-$buildtime";
 		if [[ $? -ne 0 ]]; then
-        	echo "Environment Deploy Failed. Check again. Exiting";
-            exit $?
-        fi
-        noteit ;
+        		echo "Environment Deploy Failed. Check again. Exiting";
+            		exit $?
+        	fi
+        	noteit ;
 		exit 0;;	
 	bigservice)
-        echo "Building package $appname from $branch branch ";
-        cd $gitHome/deployment-scripts/bigservices;
-        git stash;
-        git fetch;
-	    git checkout dev;
-        if [[ $? -ne 0 ]]; then
-        	echo "Branch does not exist. Run again. Exiting";
-            exit $?
-        fi
-        git pull origin dev;
+        	echo "Building package $appname from $branch branch ";
+        	cd $gitHome/deployment-scripts/bigservices;
+        	git stash;
+        	git fetch;
+	    	git checkout dev;
+        	if [[ $? -ne 0 ]]; then
+        		echo "Branch does not exist. Run again. Exiting";
+            		exit $?
+        	fi
+        	git pull origin dev;
 		rm -rf $gitHome/{temp,bundle};
 		mkdir $gitHome/{temp,bundle};
 		cd $gitHome/temp;
 		git clone git@github.com:metiseduventures/servercp.git;
-        cd $gitHome/temp/servercp;
-        git checkout $branch;
-        if [[ $? -ne 0 ]]; then
-        	echo "Branch does not exist. Run again. Exiting";
-            exit $?
-        fi
-        git pull origin $branch;
+        	cd $gitHome/temp/servercp;
+        	git checkout $branch;
+        	if [[ $? -ne 0 ]]; then
+        		echo "Branch does not exist. Run again. Exiting";
+            		exit $?
+        	fi
+        	git pull origin $branch;
 		cp $gitHome/deployment-scripts/bigservices/pom.xml $gitHome/temp/servercp/;
 		/usr/local/src/apache-maven/bin/mvn clean install;
 		if [[ $? -ne 0 ]]; then
-        	echo "Build Failed. Check code again. Exiting";
-            exit $?
-        fi
+        		echo "Build Failed. Check code again. Exiting";
+           	 	exit $?
+        	fi
 		cp $gitHome/temp/servercp/ebooks/ebooks-service/target/ebooks-service-1.0.0.war.original $gitHome/bundle/ebooks.war;
 		cp $gitHome/temp/servercp/currentaffairs/currentaffairs-wrapper/target/currentaffairs-wrapper-1.0.0.war.original $gitHome/bundle/currentaffairs.war;
 		cp $gitHome/temp/servercp/testseries/testseries-wrapper/target/testseries-wrapper-1.0.0.war.original $gitHome/bundle/testseries.war;

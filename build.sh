@@ -47,18 +47,6 @@ if [ ! -z "$arg5" ];then
 fi
 
 #functions
-noteit()
-{
-	local prod="false";
-	local sts="started";
-	if [ "$arg5" = "production" ]; then
-		prod="true";
-		sts="manual";
-	fi
-	mysql -u$dbuser -p$dbpass -h$dbhost $dbname -e "INSERT INTO $dbtable (\`time\`, \`appname\`, \`environment\`, \`branch\`, \`remark\`, \`versionlabel\`,\`user\`, \`isprod\`, \`status\` ) VALUES (now(), '$appname', '$envName', '$branch','$msg','$appname-$branch-$msg-$buildtime','$user','$prod','$sts')";
-	groupmsg=$appname": Deployment of "$branch" branch started on "$envName".";
-	python /home/ec2-user/devops/devops-bot.py "${groupmsg}";
-}
 
 verifyAppName()
 {
@@ -355,7 +343,7 @@ findAppWarName()
 		appwarkey="in/careerpower/$appwarname/1.0.0/$appwarname-1.0.0.war";;
 	Video-Streaming-server)
 		appwarname="video-service";
-		appwarkey="org/springframework/boot/$appwarname/1.4.4.RELEASE/$appwarname-1.4.4.RELEASE.war";;
+		appwarkey="org/springframework/boot/$appwarname/2.0.0.RELEASE/$appwarname-2.0.0.RELEASE.war";;
 	store-elastic-search)
 		appwarname="adda_package_search";
 		appwarkey="com/adda/search/$appwarname/0.0.1-SNAPSHOT/$appwarname-0.0.1-SNAPSHOT.war";;
@@ -626,6 +614,20 @@ findDependency()
 	esac
 }
 
+noteit()
+{
+	local prod="false";
+	local sts="started";
+	findEnvName $appname $arg5;
+	if [ "$arg5" = "production" ]; then
+		prod="true";
+		sts="manual";
+	fi
+	mysql -u$dbuser -p$dbpass -h$dbhost $dbname -e "INSERT INTO $dbtable (\`time\`, \`appname\`, \`environment\`, \`branch\`, \`remark\`, \`versionlabel\`,\`user\`, \`isprod\`, \`status\` ) VALUES (now(), '$appname', '$envName', '$branch','$msg','$appname-$branch-$msg-$buildtime','$user','$prod','$sts')";
+	groupmsg=$appname": Deployment of "$branch" branch started on "$envName".";
+	python /home/ec2-user/devops/devops-bot.py "${groupmsg}";
+}
+
 # verify application name is correct or not 
 verifyAppName $appname;
 
@@ -753,26 +755,27 @@ case  $appname in
 		cp $gitHome/temp/servercp/GlobalConfig/target/GlobalConfig-1.0.0.war $gitHome/bundle/GlobalConfig.war;
 		cp $gitHome/temp/servercp/youtube-videos/youtube-videos-wrapper/target/youtube-videos-wrapper-1.0.0.war.original $gitHome/bundle/youtube-videos.war;
 		cp $gitHome/temp/servercp/bookmarks/target/bookmarks-1.0.0.war.original $gitHome/bundle/bookmarks.war;
-	 	cd $gitHome/bundle;
+		cp -r $gitHome/deployment-scripts/bigservices/.ebextensions $gitHome/bundle/
+		cd $gitHome/bundle;
 		buildtime=$(timestamp);
 		findAppWarName $appname;
-		zip -r bigservice-$branch.zip ebooks.war currentaffairs.war testseries.war articles.war jobalerts.war magazines.war capsules.war alerts.war GlobalConfig.war youtube-videos.war bookmarks.war
+		zip -r bigservice-$branch.zip ebooks.war currentaffairs.war testseries.war articles.war jobalerts.war magazines.war capsules.war alerts.war GlobalConfig.war youtube-videos.war bookmarks.war .ebextensions
 		cp $gitHome/bundle/bigservice-$branch.zip /home/ec2-user/.m2/repository/$appwarname-$branch-$buildtime.zip;
 		aws s3 sync /home/ec2-user/.m2/repository s3://adda247-builds-repo --exclude "*" --include "*.war" --include "*.zip" --profile s3user;
 		find /home/ec2-user/.m2/repository/ -type f -name "*.war" -exec rm -f {} \;
 		aws elasticbeanstalk create-application-version --application-name $appname --version-label "$appname-$branch-$msg-$buildtime" --description "automated build of $appname from $branch branch" --source-bundle S3Bucket="adda247-builds-repo",S3Key="$appwarname-$branch-$buildtime.zip";
         	findEnvName $appname $arg5;
-		case "$arg5" in
-        		staging )
+
+             	if [ "$arg5" = "staging" ]; then
                 		aws elasticbeanstalk update-environment --environment-name $envName --version-label "$appname-$branch-$msg-$buildtime";
                 		if [[ $? -ne 0 ]]; then
                 			echo "Environment Deploy Failed. Check again. Exiting";
-                		exit $?
+                			exit $?
         			fi
-                		noteit ;;
-        		*)
-        		echo "Please deploy new build with label $appname-$branch-$msg-$buildtime to application manually";;
-		esac
+                		noteit ;
+                elif [ "$arg5" = "production" ]; then
+			echo "Please deploy new build with label $appname-$branch-$msg-$buildtime to application manually";
+		fi;
 		exit 0;;
 	extraservice)
 		echo "Building package $appname from $brnch branch ";

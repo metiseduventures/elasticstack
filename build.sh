@@ -124,20 +124,20 @@ findEnvName()
     case $app in
     	userauth )
 		if [ "$arg5" = "staging" ]; then
-        	envName="userauth-staging";
+        		envName="userauth-staging";
 		elif [ "$arg5" = "qa1" ]; then
 			envName="userauthqa1";
 		fi;;
 	ytsearch )
-		if [ "$args" = "staging" ]; then
+		if [ "$arg5" = "staging" ]; then
 			envName="ytsearch-staging";
 		fi ;;
 	adda247 )
-		if [ "$args" = "staging" ]; then
+		if [ "$arg5" = "staging" ]; then
 			envName="adda247-stagingadda247";
 		fi ;;
 	adda247-unity )
-		if [ "$args" = "staging" ]; then
+		if [ "$arg5" = "staging" ]; then
 			envName="Adda247Unity-env-staging";
 		fi ;;
 	admin-panel-ui )
@@ -190,7 +190,7 @@ findEnvName()
 		fi;;
 	erp )
 		if [ "$arg5" = "staging" ]; then
-          	envName="erpstaging";
+          		envName="erpstaging";
 		elif [ "$arg5" = "qa1" ]; then
 			envName="erpqa1";
 		fi;;
@@ -400,8 +400,8 @@ findAppPath()
 	case $app in
 	userauth)
 		gitpath=$gitHome"servercp/userauth";;
-    ytsearch)
-        gitpath=$gitHome"ytsearch";;
+   	ytsearch)
+        	gitpath=$gitHome"ytsearch";;
 	bigservice)
 		gitpath=$gitHome"deployment-scripts/bigservices";;
 	extraservice)

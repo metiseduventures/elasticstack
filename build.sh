@@ -52,7 +52,7 @@ verifyAppName()
 {
 	local app=$1;
 	case "$app" in
-		erp | userauth | bigservice | analytics | appInstall | contentadmin | franchise | mailingservice | pushservice | ranking | testseries | timeline | Video-Streaming-server | store-elastic-search | coupon-admin | couponservice | extraservice | socialapi | newcouponadmin | ytsearch | newcouponservice ) 
+		erp | userauth | bigservice | analytics | appInstall | contentadmin | franchise | mailingservice | pushservice | ranking | testseries | timeline | Video-Streaming-server | store-elastic-search | coupon-admin | couponservice | extraservice | socialapi | newcouponadmin | ytsearch | newcouponservice | mars ) 
 		;;
 
 		admin-panel-ui | storefront-user | storefront-admin )
@@ -122,7 +122,7 @@ findEnvName()
     local app=$1;
     local variant=$2;
     case $app in
-    userauth )
+    	userauth )
 		if [ "$arg5" = "staging" ]; then
         	envName="userauth-staging";
 		elif [ "$arg5" = "qa1" ]; then
@@ -256,6 +256,10 @@ findEnvName()
 		elif [ "$arg5" = "qa1" ]; then
 			envName="timelineqa1";
 		fi;;
+	mars )
+		if [ "$arg5" = "staging" ]; then
+			envName="stagingmars";
+		fi;;
 	Video-Streaming-server )
 		if [ "$arg5" = "staging" ]; then
 			envName="VideoStreamingServer-stag-env";
@@ -380,6 +384,9 @@ findAppWarName()
 	suggest)
 		appwarname="suggest";
 		appwarkey="in/careerpower/$appwarname/$appwarname/1.0.0/$appwarname-1.0.0.war";;
+	mars)
+		appwarname="exam-master";
+		appwarkey="in/careerpower/mars/$appwarname/1.0.0/$appwarname-1.0.0.war";;
 	*)
 		unset appwarname;
 		unset appwarkey;;
@@ -485,6 +492,12 @@ findAppPath()
 		gitpath=$gitHome"socialclient";;
 	suggest)
 		gitpath=$gitHome"suggest";;
+	mars)
+		gitpath=$gitHome"marsexammaster/admin";;
+	mars-common-entities)
+		gitpath=$gitHome"marsexammaster/common-entities";;
+	mars-commons)
+		gitpath=$gitHome"marsexammaster/commons";;
 	unity)
 		gitpath=$gitHome"adda247-unity";;
 	beta-store)
@@ -500,6 +513,11 @@ findDependency()
 	local app=$1
 	local brch=$2
 	case $app in 
+	mars)
+		findAppPath mars-common-entities;
+		buildPackage mars-common-entities $gitpath $brch;
+		findAppPath mars-commons;
+		buildPackage mars-commons $gitpath $brch;;
 	userauth)
 		findAppPath common-parent;
 		buildPackage common-parent $gitpath $brch;;

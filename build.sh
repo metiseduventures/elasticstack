@@ -41,6 +41,7 @@ dbpass="cbbmc33JYQE5";
 dbname="devops";
 dbtable="deployments";
 timemark='date +"%F %T"';
+cusenv=$arg5;
 
 if [ ! -z "$arg5" ];then
 	msg="$msg-$arg5";
@@ -61,13 +62,17 @@ verifyAppName()
 			exit 1;
 		else
 			case "$arg5" in
-				staging1 | staging2 | stagingv | alpha | beta | qa1 )
+				staging )
+				customBuild=true;
+				cusenv=staging1;
+				;;
+				staging2 | stagingv | alpha | beta | qa1 )
 				customBuild=true;
 				;;
 				production)
 				;;
 				*)
-				echo "invalid environment (valid: staging1,staging2,stagingv,production)";
+				echo "invalid environment (valid: staging,staging2,stagingv,production)";
 				exit 1
 			esac
 		fi;;
@@ -295,7 +300,7 @@ buildPackage()
 	fi
 	git pull origin $brnch
 	if [ "$customBuild" == true ];then
-		/usr/local/src/apache-maven/bin/mvn clean install -Denv.name=$arg5
+		/usr/local/src/apache-maven/bin/mvn clean install -Denv.name=$cusenv
 	else 
 		/usr/local/src/apache-maven/bin/mvn clean install 
 	fi
@@ -683,6 +688,7 @@ case  $appname in
      		fi
        		git pull origin $branch;
 		buildtime=$(timestamp);
+		mv app/main.lua.${env} app/main.lua;
 		zip ../$appname.zip -x *.git* -r * .[^.]* ;
 		mv ../$appname.zip /home/ec2-user/.m2/repository/$appname-$branch-$msg-$buildtime.zip;
 		aws s3 sync /home/ec2-user/.m2/repository s3://adda247-builds-repo --exclude "*" --include "*.war" --include "*.zip" --profile s3user
@@ -691,13 +697,16 @@ case  $appname in
 		# create application version.
 		aws elasticbeanstalk create-application-version --application-name $appname --version-label "$appname-$branch-$msg-$buildtime" --description "automated build of $appname from $branch branch" --source-bundle S3Bucket="adda247-builds-repo",S3Key="$appname-$branch-$msg-$buildtime.zip";
 		findEnvName $appname $arg5;
-		echo $envName;
-        	aws elasticbeanstalk update-environment --environment-name ytsearch-staging --version-label "$appname-$branch-$msg-$buildtime";
-        	if [[ $? -ne 0 ]]; then
-        		echo "Environment Deploy Failed. Check again. Exiting";
-            		exit $?
-        	fi
- 	        noteit ;
+                if [ "$arg5" = "staging" ]; then
+                                aws elasticbeanstalk update-environment --environment-name $envName --version-label "$appname-$branch-$msg-$buildtime";
+                                if [[ $? -ne 0 ]]; then
+                                        echo "Environment Deploy Failed. Check again. Exiting";
+                                        exit $?
+                                fi
+                                noteit ;
+                elif [ "$arg5" = "production" ]; then
+                        echo "Please deploy new build with label $appname-$branch-$msg-$buildtime to application manually";
+                fi;
 		exit 0;;
 	unity)
 		echo "Building package $appname from $branch branch ";

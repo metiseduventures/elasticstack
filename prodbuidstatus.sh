@@ -6,9 +6,8 @@ dbpass="cbbmc33JYQE5";
 dbname="devops";
 dbtable="deployments";
 flag=true;
-START=$(date +%s);
 
-data=$(mysql -u$dbuser -p$dbpass -h$dbhost $dbname -se "select deploymentid,environment,versionlabel from $dbtable where status='started'  and isprod='false'");
+data=$(mysql -u$dbuser -p$dbpass -h$dbhost $dbname -se "select deploymentid,environment,versionlabel from $dbtable where status='started' and isprod='true'");
 if [ -z "$data" ]; then
 	#echo "All Deployments Completed"; 
 	exit 0;
@@ -31,11 +30,6 @@ while [ "$flag" != false ]; do
 	else
 		sleep 5;
 	fi
-	if [[ $(($(date +%s) - $START)) -gt 300 ]]; then
-		mysql -u$dbuser -p$dbpass -h$dbhost $dbname -se "update $dbtable set status='stale' where deploymentid=$deploymentid";
-		groupmsg="Deployment on "$environment" Unknown. Please check manually on Beanstalk Page";
-		flag=false;
-	fi
 done
 
-        python /home/ec2-user/devops/devops-bot.py "${groupmsg}";
+        python /home/ec2-user/devops/devops-bot-devops.py "${groupmsg}";

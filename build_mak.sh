@@ -41,6 +41,7 @@ dbpass="cbbmc33JYQE5";
 dbname="devops";
 dbtable="deployments";
 timemark='date +"%F %T"';
+cusenv=$arg5;
 
 if [ ! -z "$arg5" ];then
 	msg="$msg-$arg5";
@@ -48,12 +49,11 @@ fi
 
 #functions
 
-
 verifyAppName()
 {
 	local app=$1;
 	case "$app" in
-		erp | userauth | bigservice | analytics | appInstall | contentadmin | franchise | mailingservice | pushservice | ranking | testseries | timeline | Video-Streaming-server | store-elastic-search | coupon-admin | couponservice | extraservice | socialapi | newcouponadmin | ytsearch | newcouponservice ) 
+		erp | userauth | bigservice | analytics | appInstall | contentadmin | franchise | mailingservice | pushservice | ranking | testseries | timeline | Video-Streaming-server | store-elastic-search | coupon-admin | couponservice | extraservice | socialapi | newcouponadmin | ytsearch | newcouponservice | mars ) 
 		;;
 
 		admin-panel-ui | storefront-user | storefront-admin )
@@ -62,13 +62,17 @@ verifyAppName()
 			exit 1;
 		else
 			case "$arg5" in
-				staging1 | staging2 | stagingv | alpha | beta | qa1 )
+				staging )
+				customBuild=true;
+				cusenv=staging1;
+				;;
+				staging2 | stagingv | alpha | beta | qa1 )
 				customBuild=true;
 				;;
 				production)
 				;;
 				*)
-				echo "invalid environment (valid: staging1,staging2,stagingv,production)";
+				echo "invalid environment (valid: staging,staging2,stagingv,production)";
 				exit 1
 			esac
 		fi;;
@@ -87,21 +91,21 @@ verifyAppName()
 				esac
 		fi;;
 		beta-store )
-        	if [ -z "$arg5" ]; then
-            	echo "Making beta-store build for staging environment";
-                arg5="staging";
-            else
-            	case "$arg5" in
-                	staging )
-						if [ -z "$tag" ]; then
-							echo "Tag not provided";
-							echo "usage : build.sh -a beta-store -b <branch> staing -t <tag>";
-							exit 1;
-						fi
-						echo "making unity build using $arg5 properties";;
-                    *)
-                        echo "Invalid Argument No 5 | Valid Values [staging/production]";
-                        exit 1
+        if [ -z "$arg5" ]; then
+            echo "Making beta-store build for staging environment";
+            arg5="staging";
+        else
+        	case "$arg5" in
+            	staging )
+					if [ -z "$tag" ]; then
+						echo "Tag not provided";
+						echo "usage : build.sh -a beta-store -b <branch> staing -t <tag>";
+						exit 1;
+					fi
+					echo "making unity build using $arg5 properties";;
+               	*)
+                	echo "Invalid Argument No 5 | Valid Values [staging/production]";
+                    exit 1
                 esac
             fi;;
 		*)
@@ -116,33 +120,37 @@ timestamp() {
 	date +"%d-%h_%H:%M:%S";
 }
 
-
-
 findEnvName()
 {
     local app=$1;
     local variant=$2;
     case $app in
-    userauth )
+    	userauth )
 		if [ "$arg5" = "staging" ]; then
-        	envName="userauth-staging";
+        		envName="userauth-staging";
 		elif [ "$arg5" = "qa1" ]; then
 			envName="userauthqa1";
+		elif [ "$arg5" = "production" ]; then
+			envName="userauth-production";
 		fi;;
 	ytsearch )
-		if [ "$args" = "staging" ]; then
+		if [ "$arg5" = "staging" ]; then
 			envName="ytsearch-staging";
+		elif [ "$arg5" = "production" ]; then
+			envName="ytsearchprod";
 		fi ;;
 	adda247 )
-		if [ "$args" = "staging" ]; then
+		if [ "$arg5" = "staging" ]; then
 			envName="adda247-stagingadda247";
 		fi ;;
 	adda247-unity )
-		if [ "$args" = "staging" ]; then
+		if [ "$arg5" = "staging" ]; then
 			envName="Adda247Unity-env-staging";
+		elif [ "$arg5" = "production" ]; then
+			envName="Adda247Unity-env-prod";
 		fi ;;
 	admin-panel-ui )
-		if [ "$arg5" = "staging1" ] ;then
+		if [ "$arg5" = "staging" ] ;then
 			envName="stagingadminui";
 		elif [ "$arg5" = "staging2" ]; then
 			envName="stagingadminui2";
@@ -150,83 +158,111 @@ findEnvName()
 			envName="stagingadminuiv";
 		elif [ "$arg5" = "qa1" ]; then
 			envName="adminuiqa1";
+		elif [ "$arg5" = "production" ]; then
+			envName="adminuiProduction";
 		fi;;
 	analytics )
 		if [ "$arg5" = "staging" ]; then
 			envName="analyticsstaging";
 		elif [ "$arg5" = "qa1" ]; then
 			envName="analyticsqa1";
+		elif [ "$arg5" = "production" ]; then
+			envName="analyticsprod";
 		fi;;
 	bigservice )
 		if [ "$arg5" = "staging" ]; then
 			envName="bigservice-stag-env";
 		elif [ "$arg5" = "qa1" ]; then
 			envName="bigserviceqa1";
+		elif [ "$arg5" = "production" ]; then
+			envName="bigservice-env";
 		fi;;
 	contentadmin )
 		if [ "$arg5" = "staging" ]; then
 			envName="contentadmin-stag1-env";
 		elif [ "$arg5" = "qa1" ]; then
 			envName="contentadminqa1";
+		elif [ "$arg5" = "production" ]; then
+			envName="contentadminprod";
 		fi;;
 	newcouponadmin )
 		if [ "$arg5" = "staging" ]; then
 			envName="newcouponadminstaging";
-		fi;;	
+		elif [ "$arg5" = "production" ]; then
+			envName="newcouponadminprod";
+		fi;;
 	newcouponservice )
 		if [ "$arg5" = "staging" ]; then
 			envName="newcouponservicestaging";
-		fi;;	
+		elif [ "$arg5" = "production" ]; then
+			envName="newcouponserviceprod";
+		fi;;
 	coupon-admin )
 		if [ "$arg5" = "staging" ]; then
 			envName="CouponAdminStaging";
 		elif [ "$arg5" = "qa1" ]; then
 			envName="couponadminqa1";
+		elif [ "$arg5" = "production" ]; then
+			envName="couponadminprod";
 		fi;;
 	couponservice )
 		if [ "$arg5" = "staging" ]; then
 			envName="CouponServiceStaging";
 		elif [ "$arg5" = "qa1" ]; then
 			envName="couponserviceqa1";
+		elif [ "$arg5" = "production" ]; then
+			envName="couponserviceprod";
 		fi;;
 	erp )
 		if [ "$arg5" = "staging" ]; then
-          	envName="erpstaging";
+          		envName="erpstaging";
 		elif [ "$arg5" = "qa1" ]; then
 			envName="erpqa1";
+		elif [ "$arg5" = "production" ]; then
+			envName="erpProduction";
 		fi;;
 	extraservice )
 		if [ "$arg5" = "staging" ]; then
 			envName="extraservice-staging-env";
 		elif [ "$arg5" = "qa1" ]; then
 			envName="extraserviceqa1";
+		elif [ "$arg5" = "production" ]; then
+			envName="extraservice-env2";
 		fi;;
 	franchise )
 		if [ "$arg5" = "staging" ]; then
 			envName="franchise-stag-env";
 		elif [ "$arg5" = "qa1" ]; then
 			envName="franchiseqa1";
+		elif [ "$arg5" = "production" ]; then
+			envName="Franchise-env1";
 		fi;;
 	pushservice )
 		if [ "$arg5" = "staging" ]; then
 			envName="pushservice-stag-env";
 		elif [ "$arg5" = "qa1" ]; then
 			envName="pushserviceqa1";
+		elif [ "$arg5" = "production" ]; then
+			envName="pushservice-env";
 		fi;;
 	ranking )
 		if [ "$arg5" = "staging" ]; then
 			envName="ranking-stag-env";
 		elif [ "$arg5" =  "qa1" ]; then
 			envName="rankingqa1";
+		elif [ "$arg5" = "production" ]; then
+			envName="ranking-env";
 		fi;;
 	store-elastic-search )
 		if [ "$arg5" = "staging" ]; then
 			envName="StoreElasticSearchStaging";
 		elif [ "$arg5" = "qa1" ]; then
 			envName="storeelasticsearchqa1";
+		elif [ "$arg5" = "production" ]; then
+			envName="StoreElasticSearch-env";
 		fi;;
 	storefront-admin )
-		if [ "$arg5" = "staging1" ]; then
+		if [ "$arg5" = "staging" ]; then
 			envName="StoreFrontAdminStaging1";
 		elif [ "$arg5" = "staging2" ]; then
 			envName="StoreFrontAdminStaging2";
@@ -234,9 +270,11 @@ findEnvName()
 			envName="StoreFrontAdminStagingv";
 		elif [ "$arg5" = "qa1" ]; then
 			envName="storefrontadminqa1";
+		elif [ "$arg5" = "production" ]; then
+			envName="StorefrontAdminProduction";
 		fi;;
 	storefront-user )
-		if [ "$arg5" = "staging1" ]; then
+		if [ "$arg5" = "staging" ]; then
 			envName="stagingstoreuser1";
 		elif [ "$arg5" = "staging2" ]; then
 			envName="stagingstoreuser2";
@@ -244,31 +282,41 @@ findEnvName()
 			envName="stagingstoreuser-v";
 		elif [ "$arg5" = "qa1" ]; then
 			envName="storefrontuserqa1";
+		elif [ "$arg5" = "production" ]; then
+			envName="storefrontuserprod";
 		fi;;
 	testseries )
 		if [ "$arg5" = "staging" ]; then
 			envName="testseriesstaging";
 		elif [ "$arg5" = "qa1" ]; then
 			envName="testseriesqa1";
+		elif [ "$arg5" = "production" ]; then
+			envName="testseriesprod";
 		fi;;
 	timeline )
 		if [ "$arg5" = "staging" ]; then
 			envName="Timeline-stag-env";
 		elif [ "$arg5" = "qa1" ]; then
 			envName="timelineqa1";
+		elif [ "$arg5" = "production" ]; then
+			envName="timeline-env";
 		fi;;
+        mars )
+                if [ "$arg5" = "staging" ]; then
+                        envName="stagingmars";
+                fi;;
 	Video-Streaming-server )
 		if [ "$arg5" = "staging" ]; then
 			envName="VideoStreamingServer-stag-env";
 		elif [ "$arg5" = "qa1" ]; then
 			envName="videostreamingqa1";
+		elif [ "$arg5" = "production" ]; then
+			envName="VideoStreamingServer";
 		fi;;
 	* )
  		echo "No Environment mapped for this";;
     	esac
 }
-
-
 
 buildPackage()
 {
@@ -292,7 +340,7 @@ buildPackage()
 	fi
 	git pull origin $brnch
 	if [ "$customBuild" == true ];then
-		/usr/local/src/apache-maven/bin/mvn clean install -Denv.name=$arg5
+		/usr/local/src/apache-maven/bin/mvn clean install -Denv.name=$cusenv
 	else 
 		/usr/local/src/apache-maven/bin/mvn clean install 
 	fi
@@ -378,9 +426,9 @@ findAppWarName()
 	extraservice)
 		appwarname="extraservice";
 		appwarkey="$appwarname-$branch.zip";;
-	suggest)
-		appwarname="suggest";
-		appwarkey="in/careerpower/$appwarname/$appwarname/1.0.0/$appwarname-1.0.0.war";;
+        mars)
+                appwarname="exam-master";
+                appwarkey="in/careerpower/mars/$appwarname/1.0.0/$appwarname-1.0.0.war";;
 	*)
 		unset appwarname;
 		unset appwarkey;;
@@ -484,8 +532,12 @@ findAppPath()
 		gitpath=$gitHome"storefront/storefront-core";;
 	socialapi)
 		gitpath=$gitHome"socialclient";;
-	suggest)
-		gitpath=$gitHome"suggest";;
+	mars)
+		gitpath=$gitHome"marsexammaster/admin";;
+	mars-common-entities)
+		gitpath=$gitHome"marsexammaster/common-entities";;
+	mars-commons)
+		gitpath=$gitHome"marsexammaster/commons";;
 	unity)
 		gitpath=$gitHome"adda247-unity";;
 	beta-store)
@@ -501,6 +553,11 @@ findDependency()
 	local app=$1
 	local brch=$2
 	case $app in 
+	mars)
+		findAppPath mars-common-entities;
+		buildPackage mars-common-entities $gitpath $brch;
+		findAppPath mars-commons;
+		buildPackage mars-commons $gitpath $brch;;
 	userauth)
 		findAppPath common-parent;
 		buildPackage common-parent $gitpath $brch;;
@@ -614,6 +671,7 @@ findDependency()
 		echo "No Dependency packages needed";;
 	esac
 }
+
 noteit()
 {
 	local prod="false";
@@ -664,6 +722,7 @@ case  $appname in
         fi
         git pull origin $branch;
         buildtime=$(timestamp);
+        mv app/main.lua.${env} app/main.lua;
 		zip ../$appname.zip -x *.git* -r * .[^.]* ;
 		mv ../$appname.zip /home/ec2-user/.m2/repository/$appname-$branch-$msg-$buildtime.zip;
 		aws s3 sync /home/ec2-user/.m2/repository s3://adda247-builds-repo --exclude "*" --include "*.war" --include "*.zip" --profile s3user
@@ -672,13 +731,16 @@ case  $appname in
 		# create application version.
 		aws elasticbeanstalk create-application-version --application-name $appname --version-label "$appname-$branch-$msg-$buildtime" --description "automated build of $appname from $branch branch" --source-bundle S3Bucket="adda247-builds-repo",S3Key="$appname-$branch-$msg-$buildtime.zip";
 		findEnvName $appname $arg5;
-		echo $envName;
-        aws elasticbeanstalk update-environment --environment-name ytsearch-staging --version-label "$appname-$branch-$msg-$buildtime";
-        if [[ $? -ne 0 ]]; then
-        	echo "Environment Deploy Failed. Check again. Exiting";
-            exit $?
-        fi
-        noteit ;
+        if [ "$arg5" = "staging" ]; then
+        	aws elasticbeanstalk update-environment --environment-name $envName --version-label "$appname-$branch-$msg-$buildtime";
+        	if [[ $? -ne 0 ]]; then
+                echo "Environment Deploy Failed. Check again. Exiting";
+                exit $?
+            fi
+            noteit ;
+        elif [ "$arg5" = "production" ]; then
+        	echo "Please deploy new build with label $appname-$branch-$msg-$buildtime to application manually";
+        fi;
 		exit 0;;
 	unity)
 		echo "Building package $appname from $branch branch ";

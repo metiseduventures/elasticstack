@@ -6,6 +6,7 @@ dbpass="cbbmc33JYQE5";
 dbname="devops";
 dbtable="deployments";
 flag=true;
+START=$(date +%s);
 
 data=$(mysql -u$dbuser -p$dbpass -h$dbhost $dbname -se "select deploymentid,environment,versionlabel from $dbtable where status='started' and isprod='true'");
 if [ -z "$data" ]; then
@@ -29,6 +30,11 @@ while [ "$flag" != false ]; do
 		flag=false;
 	else
 		sleep 5;
+	fi
+	if [[ $(($(date +%s) - $START)) -gt 900 ]]; then
+		mysql -u$dbuser -p$dbpass -h$dbhost $dbname -se "update $dbtable set status='stale' where deploymentid=$deploymentid";
+		groupmsg="Deployment on "$environment" Unknown. Please check manually on Beanstalk Page : Version : "$envverlabel".";
+		flag=false;
 	fi
 done
 

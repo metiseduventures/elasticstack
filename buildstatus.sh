@@ -19,7 +19,7 @@ versionlabel=$(echo $data | awk '{print $3}');
 
 while [ "$flag" != false ]; do
 
-	if [[ $environment =~ "doubt" || $environment =~ "social" ]]; then
+	if [[ $environment =~ "doubt" || $environment =~ "osocial" ]]; then
 		if [[ $environment =~ "staging" ]]; then
 			envstatus=$(aws elasticbeanstalk describe-environments --environment-name $environment --output=json --profile=mumbai | grep \"Status\" | awk '{ print $2}' | tail -c +2 | head -c -3);
 			envverlabel=$(aws elasticbeanstalk describe-environments --environment-name $environment --output=json --profile=mumbai | grep \"VersionLabel\" | awk '{ print $2}' | tail -c +2 | head -c -3);

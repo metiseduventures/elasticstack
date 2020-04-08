@@ -53,7 +53,7 @@ verifyAppName()
 {
 	local app=$1;
 	case "$app" in
-		erp | userauth | bigservice | analytics | appInstall | contentadmin | franchise | mailingservice | pushservice | ranking | testseries | timeline | Video-Streaming-server | store-elastic-search | coupon-admin | couponservice | extraservice | socialapi | newcouponadmin | ytsearch | newcouponservice | mars ) 
+		erp | userauth | bigservice | analytics | appInstall | contentadmin | franchise | mailingservice | pushservice | ranking | testseries | timeline | Video-Streaming-server | store-elastic-search | coupon-admin | couponservice | extraservice | socialclient | newcouponadmin | ytsearch | newcouponservice | mars | Video-Streaming-server ) 
 		;;
 
 		admin-panel-ui | storefront-user | storefront-admin )
@@ -305,6 +305,12 @@ findEnvName()
                 if [ "$arg5" = "staging" ]; then
                         envName="stagingmars";
                 fi;;
+        socialclient )
+                if [ "$arg5" = "staging" ]; then
+                        envName="socialclientstaging";
+		elif [ "$arg5" = "production" ]; then
+			envName="socialclientprod";
+		fi;;
 	Video-Streaming-server )
 		if [ "$arg5" = "staging" ]; then
 			envName="VideoStreamingServer-stag-env";
@@ -417,7 +423,7 @@ findAppWarName()
 	couponservice)
 		appwarname="coupon-service-web";
 		appwarkey="in/careerpower/coupon/$appwarname/1.0.0/$appwarname-1.0.0.war";;
-	socialapi)
+	socialclient )
 		appwarname="socialclient";
 		appwarkey="in/careerpower/$appwarname/0.0.1/$appwarname-0.0.1.war";;
 	bigservice)
@@ -443,7 +449,7 @@ findAppPath()
 	userauth)
 		gitpath=$gitHome"servercp/userauth";;
    	ytsearch)
-        gitpath=$gitHome"ytsearch";;
+        	gitpath=$gitHome"ytsearch";;
 	bigservice)
 		gitpath=$gitHome"deployment-scripts/bigservices";;
 	extraservice)
@@ -530,8 +536,8 @@ findAppPath()
 		gitpath=$gitHome"storefront/storefront-jpa-entities";;
 	storefront-core)
 		gitpath=$gitHome"storefront/storefront-core";;
-	socialapi)
-		gitpath=$gitHome"socialclient";;
+	socialclient )
+		gitpath=$gitHome"socialclient";;	
 	mars)
 		gitpath=$gitHome"marsexammaster/admin";;
 	mars-common-entities)
@@ -897,9 +903,14 @@ aws elasticbeanstalk create-application-version --application-name $appnametwist
 # update application when staging
 
 findEnvName $appname $arg5;
-aws elasticbeanstalk update-environment --environment-name $envName --version-label "$appname-$branch-$msg-$buildtime";
-if [[ $? -ne 0 ]]; then
-    	echo "Environment Deploy Failed. Check again. Exiting";
-    	exit $?
+if [ ! -z "$envName" ];then
+	aws elasticbeanstalk update-environment --environment-name $envName --version-label "$appname-$branch-$msg-$buildtime";
+	if [[ $? -ne 0 ]]; then
+    		echo "Environment Deploy Failed. Check again. Exiting";
+    		exit $?
+	fi
+else
+	echo "No Environment mapped to deploy automatic ";
+	exit 1;
 fi
 noteit;

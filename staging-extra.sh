@@ -18,8 +18,8 @@ stg2="stagingstoreuser2 StoreFrontAdminStaging2 stagingadminui2";
 stg3="stagingstoreuser-v StoreFrontAdminStagingv stagingadminuiv";
 stg4="StoreElasticSearchStaging contentadmin-stag1-env CouponAdminStaging CouponServiceStaging Timeline-stag-env pushservice-stag-env analyticsstaging ranking-stag-env";
 stg5="userauth-staging VideoStreamingServer-stag-env testseries-stag-env bigservice-stag-env extraservice-staging-env";
-stg6="Adda247Unity-env-staging erpstaging franchise-stag-env";
-stg7="socialapi-staging stagingadda247 search2prod";
+stg6="erpstaging franchise-stag-env";
+stg7="Adda247Unity-env-staging socialapi-staging stagingadda247 search2prod";
 stg8="StoreElasticSearchStaging2 StoreElasticSearchStaging";
 
 

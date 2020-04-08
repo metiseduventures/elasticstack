@@ -18,9 +18,9 @@ stg2="stagingstoreuser2 StoreFrontAdminStaging2 stagingadminui2";
 stg3="stagingstoreuser-v StoreFrontAdminStagingv stagingadminuiv";
 stg4="StoreElasticSearchStaging contentadmin-stag1-env CouponAdminStaging CouponServiceStaging Timeline-stag-env pushservice-stag-env analyticsstaging ranking-stag-env";
 stg5="userauth-staging VideoStreamingServer-stag-env testseriesstaging bigservice-stag-env extraservice-staging-env";
-stg6="Adda247Unity-env-staging erpstaging franchise-stag-env";
-stg7="stagingadda247 newcouponadminstaging newcouponservicestaging ytsearch-staging stagingmars";
-stg8="StoreElasticSearchStaging2 StoreElasticSearchStaging";
+stg6="stagingadda247 Adda247Unity-env-staging erpstaging franchise-stag-env";
+stg7="newcouponadminstaging newcouponservicestaging ytsearch-staging stagingmars";
+stg8="StoreElasticSearchStaging2 StoreElasticSearchStaging socialclientstaging";
 
 
 for i in $stg1 $stg4 $stg5 $stg7 
@@ -34,7 +34,7 @@ do
 	aws autoscaling update-auto-scaling-group --auto-scaling-group-name $ASG --min-size $size --max-size $size;
 done
 
-stgmum1="stagingdoubts socialclientstaging";
+stgmum1="stagingdoubts";
 
 
 for i in $stgmum1

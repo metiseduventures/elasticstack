@@ -1,0 +1,5 @@
+---
+# vars file for logstash
+Node.name: "Test"
+logstash_version: "5"
+elasticSearchIp: 192.168.0.225

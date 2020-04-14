@@ -1,0 +1,30 @@
+# Module: apache
+      # Docs: https://www.elastic.co/guide/en/beats/filebeat/7.4/filebeat-module-apache.html
+
+      - module: apache
+      # Access logs
+        access:
+          enabled: true
+          force_close_files: true
+          input:
+            fields:
+              env: staging
+              type: storefrontadmin_apache_access
+
+        # Set custom paths for the log files. If left empty,
+        # Filebeat will choose the paths depending on your OS.
+          var.paths: ["/var/log/httpd/access_log*"]
+
+      # Error logs
+        error:
+          enabled: true
+          force_close_files: true
+          input:
+            fields:
+              env: staging
+              type: storefrontadmin_apache_error
+
+       # Set custom paths for the log files. If left empty,
+       # Filebeat will choose the paths depending on your OS.
+          var.paths: ["/var/log/httpd/error_log*"]
+

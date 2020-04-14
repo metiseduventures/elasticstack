@@ -6,7 +6,7 @@ output.logstash:
   hosts: ["172.31.12.45:5044", "172.31.15.129:5044", "172.31.6.135:5044"]
   loadbalance: true
 setup.dashboards.enabled: true
-setup.template.name: "filebeat"
+setup.template.name: "filebeatapm"
 setup.template.pattern: "filebeat-*"
 setup.dashboards.index: "filebeat-*"
 setup.template.overwrite: true
@@ -21,7 +21,7 @@ filebeat.inputs:
   fields:
     env: staging
     type: tomcat
-    application_name: storefront-admin
+    application_name: userauth
 filebeat.config.modules:
       # Glob pattern for configuration loading
   path: ${path.config}/modules.d/*.yml
@@ -30,4 +30,4 @@ processors:
 - add_fields:
     target: 'store'
     fields:
-      app_name: storefrontadmin
+      app_name: userauth

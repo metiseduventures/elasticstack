@@ -1,12 +1,12 @@
 setup.kibana:
-  host: "http://3.231.207.118:80"
+  host: "http://34.239.171.174:80"
   username: "elastic"
   password: "adda247"
 output.logstash:
   hosts: ["172.31.12.45:5044", "172.31.15.129:5044", "172.31.6.135:5044"]
   loadbalance: true
 setup.dashboards.enabled: true
-setup.template.name: "filebeatapm"
+setup.template.name: "filebeat"
 setup.template.pattern: "filebeat-*"
 setup.dashboards.index: "filebeat-*"
 setup.template.overwrite: true

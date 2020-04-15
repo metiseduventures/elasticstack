@@ -1,5 +1,5 @@
 setup.kibana:
-  host: "http://3.231.207.118:80"
+  host: "http://monitor.adda247.com"
   username: "elastic"
   password: "adda247"
 output.logstash:

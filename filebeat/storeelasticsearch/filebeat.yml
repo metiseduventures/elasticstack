@@ -21,7 +21,7 @@ filebeat.inputs:
   fields:
     env: staging
     type: tomcat
-    application_name: storeelasticsearch
+    application_name: ${application_name}
 filebeat.config.modules:
       # Glob pattern for configuration loading
   path: ${path.config}/modules.d/*.yml

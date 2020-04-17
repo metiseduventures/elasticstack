@@ -21,7 +21,7 @@ filebeat.inputs:
   fields:
     env: staging
     type: tomcat
-    application_name: "{$APPLICATION_NAME}"
+    application_name: ${APPLICATION_NAME}
 filebeat.config.modules:
       # Glob pattern for configuration loading
   path: ${path.config}/modules.d/*.yml

@@ -66,7 +66,7 @@ verifyAppName()
 				customBuild=true;
 				cusenv=staging1;
 				;;
-				staging2 | stagingv | alpha | beta | qa1 )
+				staging2 | stagingv | alpha )
 				customBuild=true;
 				;;
 				production)
@@ -279,9 +279,9 @@ findEnvName()
 		elif [ "$arg5" = "staging2" ]; then
 			envName="stagingstoreuser2";
 		elif [ "$arg5" = "stagingv" ]; then
-			envName="stagingstoreuser-v";
-		elif [ "$arg5" = "qa1" ]; then
-			envName="storefrontuserqa1";
+			envName="stagingstoreuserv";
+		elif [ "$arg5" = "alpha" ]; then
+			envName="storefrontuserprod2";
 		elif [ "$arg5" = "production" ]; then
 			envName="storefrontuserprod";
 		fi;;
@@ -313,11 +313,9 @@ findEnvName()
 		fi;;
 	Video-Streaming-server )
 		if [ "$arg5" = "staging" ]; then
-			envName="VideoStreamingServer-stag-env";
-		elif [ "$arg5" = "qa1" ]; then
-			envName="videostreamingqa1";
+			envName="videoserverstaging";
 		elif [ "$arg5" = "production" ]; then
-			envName="VideoStreamingServer";
+			envName="videoserverproduction";
 		fi;;
 	* )
  		echo "No Environment mapped for this";;
@@ -886,7 +884,7 @@ case  $appname in
 esac
 
 
-# sync war files to s3 bucket (s3://adda247-builds)
+# sync war files to s3 bucket (s3://adda247-builds-repo)
 aws s3 sync /home/ec2-user/.m2/repository s3://adda247-builds-repo --exclude "*" --include "*.war" --include "*.zip" --profile s3user
 find /home/ec2-user/.m2/repository/ -type f -name "*.war" -exec rm -f {} \;
 

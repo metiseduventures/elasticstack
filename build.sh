@@ -53,7 +53,7 @@ verifyAppName()
 {
 	local app=$1;
 	case "$app" in
-		erp | userauth | bigservice | analytics | appInstall | contentadmin | franchise | mailingservice | pushservice | ranking | testseries | timeline | Video-Streaming-server | store-elastic-search | coupon-admin | couponservice | extraservice | socialclient | newcouponadmin | ytsearch | newcouponservice | mars | Video-Streaming-server ) 
+		erp | userauth | bigservice | analytics | appInstall | contentadmin | franchise | mailingservice | pushservice | ranking | testseries | timeline | Video-Streaming-server | store-elastic-search | coupon-admin | couponservice | extraservice | socialclient | newcouponadmin | ytsearch | newcouponservice | mars | Video-Streaming-server | doubts ) 
 		;;
 
 		admin-panel-ui | storefront-user | storefront-admin )
@@ -66,7 +66,7 @@ verifyAppName()
 				customBuild=true;
 				cusenv=staging1;
 				;;
-				staging2 | stagingv | alpha | beta | qa1 )
+				staging2 | staging3 | stagingv | alpha )
 				customBuild=true;
 				;;
 				production)
@@ -91,12 +91,12 @@ verifyAppName()
 				esac
 		fi;;
 		beta-store )
-        if [ -z "$arg5" ]; then
-            echo "Making beta-store build for staging environment";
-            arg5="staging";
-        else
-            case "$arg5" in
-            	staging )
+        	if [ -z "$arg5" ]; then
+            		echo "Making beta-store build for staging environment";
+            		arg5="staging";
+        	else
+            		case "$arg5" in
+            		staging )
 					if [ -z "$tag" ]; then
 						echo "Tag not provided";
 						echo "usage : build.sh -a beta-store -b <branch> staing -t <tag>";
@@ -154,6 +154,8 @@ findEnvName()
 			envName="stagingadminui";
 		elif [ "$arg5" = "staging2" ]; then
 			envName="stagingadminui2";
+		elif [ "$arg5" = "staging3" ]; then
+			envName="stagingadminui3";
 		elif [ "$arg5" = "stagingv" ]; then
 			envName="stagingadminuiv";
 		elif [ "$arg5" = "qa1" ]; then
@@ -266,6 +268,8 @@ findEnvName()
 			envName="StoreFrontAdminStaging1";
 		elif [ "$arg5" = "staging2" ]; then
 			envName="StoreFrontAdminStaging2";
+		elif [ "$arg5" = "staging3" ]; then
+			envName="storefrontadminstaging3";
 		elif [ "$arg5" = "stagingv" ]; then
 			envName="StoreFrontAdminStagingv";
 		elif [ "$arg5" = "qa1" ]; then
@@ -278,12 +282,14 @@ findEnvName()
 			envName="stagingstoreuser1";
 		elif [ "$arg5" = "staging2" ]; then
 			envName="stagingstoreuser2";
+		elif [ "$arg5" = "staging3" ]; then
+			envName="stagingstoreuser3";
 		elif [ "$arg5" = "stagingv" ]; then
-			envName="stagingstoreuser-v";
-		elif [ "$arg5" = "qa1" ]; then
-			envName="storefrontuserqa1";
+			envName="stagingstoreuserv";
+		elif [ "$arg5" = "alpha" ]; then
+			envName="storefrontuserprod2";
 		elif [ "$arg5" = "production" ]; then
-			envName="storefrontuserprod";
+			envName="storefrontuserproduction";
 		fi;;
 	testseries )
 		if [ "$arg5" = "staging" ]; then
@@ -305,6 +311,12 @@ findEnvName()
                 if [ "$arg5" = "staging" ]; then
                         envName="stagingmars";
                 fi;;
+	doubts )
+                if [ "$arg5" = "staging" ]; then
+                        envName="doubtsstaging";
+		elif [ "$arg5" = "production" ]; then
+			envName="doubtsprod";
+                fi;;
         socialclient )
                 if [ "$arg5" = "staging" ]; then
                         envName="socialclientstaging";
@@ -313,11 +325,9 @@ findEnvName()
 		fi;;
 	Video-Streaming-server )
 		if [ "$arg5" = "staging" ]; then
-			envName="VideoStreamingServer-stag-env";
-		elif [ "$arg5" = "qa1" ]; then
-			envName="videostreamingqa1";
+			envName="videoserverstaging";
 		elif [ "$arg5" = "production" ]; then
-			envName="VideoStreamingServer";
+			envName="videoserverproduction";
 		fi;;
 	* )
  		echo "No Environment mapped for this";;
@@ -334,7 +344,7 @@ buildPackage()
 		echo "Branch is not specified. Aborting"; exit 1;
 	fi
 	cd $repoPath
-    echo -e "\033[4;91mBuilding package $app from $brnch branch \033[0m";
+    	echo -e "\033[4;91mBuilding package $app from $brnch branch \033[0m";
 	#drop unfinished changes
 	git stash  
 	# switch/checkout required branch
@@ -350,7 +360,7 @@ buildPackage()
 	else 
 		/usr/local/src/apache-maven/bin/mvn clean install 
 	fi
-    if [[ $? -ne 0 ]]; then
+    	if [[ $? -ne 0 ]]; then
     	echo -e "\033[33;5mBuild Failed. Check code again. Exiting\033[0m";
 		exit $?
 	fi
@@ -435,6 +445,9 @@ findAppWarName()
 	mars)
 		appwarname="exam-master";
 		appwarkey="in/careerpower/mars/$appwarname/1.0.0/$appwarname-1.0.0.war";;
+	doubts)
+		appwarname="doubts";
+		appwarkey="in/careerpower/$appwarname/0.0.1/$appwarname-0.0.1.war";;
 	*)
 		unset appwarname;
 		unset appwarkey;;
@@ -548,6 +561,8 @@ findAppPath()
 		gitpath=$gitHome"adda247-unity";;
 	beta-store)
 		gitpath=$gitHome"web-store";;
+	doubts)
+		gitpath=$gitHome"doubts";;
 	*) 
 		unset gitpath;;
 	esac
@@ -673,6 +688,9 @@ findDependency()
 	testseries)
 		findAppPath commons-parent;
 		buildPackage commons-parent $gitpath master;;			
+	doubts)
+		findAppPath commons;
+                buildPackage commons $gitpath master;;
 	*)
 		echo "No Dependency packages needed";;
 	esac
@@ -886,7 +904,7 @@ case  $appname in
 esac
 
 
-# sync war files to s3 bucket (s3://adda247-builds)
+# sync war files to s3 bucket (s3://adda247-builds-repo)
 aws s3 sync /home/ec2-user/.m2/repository s3://adda247-builds-repo --exclude "*" --include "*.war" --include "*.zip" --profile s3user
 find /home/ec2-user/.m2/repository/ -type f -name "*.war" -exec rm -f {} \;
 

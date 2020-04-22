@@ -231,9 +231,7 @@ findEnvName()
 		fi;;
 	franchise )
 		if [ "$arg5" = "staging" ]; then
-			envName="franchise-stag-env";
-		elif [ "$arg5" = "qa1" ]; then
-			envName="franchiseqa1";
+			envName="franchisestaging";
 		elif [ "$arg5" = "production" ]; then
 			envName="Franchise-env1";
 		fi;;

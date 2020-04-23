@@ -19,9 +19,7 @@ filebeat.inputs:
 
   force_close_files: true
   fields:
-    env: staging
     type: tomcat
-    application_name: ${APPLICATION_NAME}
 filebeat.config.modules:
       # Glob pattern for configuration loading
   path: ${path.config}/modules.d/*.yml
@@ -31,3 +29,4 @@ processors:
     target: 'adda247'
     fields:
       app_name: storeelasticsearch
+      env: staging

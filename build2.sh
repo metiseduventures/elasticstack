@@ -32,7 +32,7 @@ fi
 	 
 #Environment Variables
 gitHome="/home/ec2-user/git/";
-msg="build-script-mak";
+msg="build-script";
 user="devops";
 customBuild=false;
 dbhost="localhost";
@@ -53,7 +53,7 @@ verifyAppName()
 {
 	local app=$1;
 	case "$app" in
-		erp | userauth | bigservice | analytics | appInstall | contentadmin | franchise | mailingservice | pushservice | ranking | testseries | timeline | Video-Streaming-server | store-elastic-search | coupon-admin | couponservice | extraservice | socialclient | newcouponadmin | ytsearch | newcouponservice | mars )
+		erp | userauth | bigservice | analytics | appInstall | contentadmin | franchise | mailingservice | pushservice | ranking | testseries | timeline | Video-Streaming-server | store-elastic-search | coupon-admin | couponservice | extraservice | socialclient | newcouponadmin | ytsearch | newcouponservice | mars | Video-Streaming-server | doubts ) 
 		;;
 
 		admin-panel-ui | storefront-user | storefront-admin )
@@ -66,7 +66,7 @@ verifyAppName()
 				customBuild=true;
 				cusenv=staging1;
 				;;
-				staging2 | stagingv | alpha )
+				staging2 | staging3 | stagingv | alpha )
 				customBuild=true;
 				;;
 				production)
@@ -91,23 +91,23 @@ verifyAppName()
 				esac
 		fi;;
 		beta-store )
-        if [ -z "$arg5" ]; then
-            echo "Making beta-store build for staging environment";
-            arg5="staging";
-        else
-        	case "$arg5" in
-            	staging )
+        	if [ -z "$arg5" ]; then
+            		echo "Making beta-store build for staging environment";
+            		arg5="staging";
+        	else
+            		case "$arg5" in
+            		staging )
 					if [ -z "$tag" ]; then
 						echo "Tag not provided";
 						echo "usage : build.sh -a beta-store -b <branch> staing -t <tag>";
 						exit 1;
 					fi
 					echo "making unity build using $arg5 properties";;
-               	*)
-                	echo "Invalid Argument No 5 | Valid Values [staging/production]";
-                    exit 1
-                esac
-            fi;;
+                 *)
+                        echo "Invalid Argument No 5 | Valid Values [staging/production]";
+                        exit 1
+            esac
+        fi;;
 		*)
 			echo "Invalid application name. Application does not exist";
 			exit 1;;
@@ -154,6 +154,8 @@ findEnvName()
 			envName="stagingadminui";
 		elif [ "$arg5" = "staging2" ]; then
 			envName="stagingadminui2";
+		elif [ "$arg5" = "staging3" ]; then
+			envName="stagingadminui3";
 		elif [ "$arg5" = "stagingv" ]; then
 			envName="stagingadminuiv";
 		elif [ "$arg5" = "qa1" ]; then
@@ -264,6 +266,8 @@ findEnvName()
 			envName="StoreFrontAdminStaging1";
 		elif [ "$arg5" = "staging2" ]; then
 			envName="StoreFrontAdminStaging2";
+		elif [ "$arg5" = "staging3" ]; then
+			envName="storefrontadminstaging3";
 		elif [ "$arg5" = "stagingv" ]; then
 			envName="StoreFrontAdminStagingv";
 		elif [ "$arg5" = "qa1" ]; then
@@ -276,12 +280,14 @@ findEnvName()
 			envName="stagingstoreuser1";
 		elif [ "$arg5" = "staging2" ]; then
 			envName="stagingstoreuser2";
+		elif [ "$arg5" = "staging3" ]; then
+			envName="stagingstoreuser3";
 		elif [ "$arg5" = "stagingv" ]; then
 			envName="stagingstoreuserv";
 		elif [ "$arg5" = "alpha" ]; then
 			envName="storefrontuserprod2";
 		elif [ "$arg5" = "production" ]; then
-			envName="storefrontuserprod";
+			envName="storefrontuserproduction";
 		fi;;
 	testseries )
 		if [ "$arg5" = "staging" ]; then
@@ -302,6 +308,12 @@ findEnvName()
         mars )
                 if [ "$arg5" = "staging" ]; then
                         envName="stagingmars";
+                fi;;
+	doubts )
+                if [ "$arg5" = "staging" ]; then
+                        envName="doubtsstaging";
+		elif [ "$arg5" = "production" ]; then
+			envName="doubtsprod";
                 fi;;
         socialclient )
                 if [ "$arg5" = "staging" ]; then
@@ -330,7 +342,7 @@ buildPackage()
 		echo "Branch is not specified. Aborting"; exit 1;
 	fi
 	cd $repoPath
-    echo -e "\033[4;91mBuilding package $app from $brnch branch \033[0m";
+    	echo -e "\033[4;91mBuilding package $app from $brnch branch \033[0m";
 	#drop unfinished changes
 	git stash  
 	# switch/checkout required branch
@@ -346,7 +358,7 @@ buildPackage()
 	else 
 		/usr/local/src/apache-maven/bin/mvn clean install 
 	fi
-    if [[ $? -ne 0 ]]; then
+    	if [[ $? -ne 0 ]]; then
     	echo -e "\033[33;5mBuild Failed. Check code again. Exiting\033[0m";
 		exit $?
 	fi
@@ -370,7 +382,7 @@ findAppWarName()
 		appwarkey="in/careerpower/$appwarname/1.0.0/$appwarname-1.0.0.war";;
 	contentadmin)
 		appwarname="contentadmin";
-		appwarkey="in/careerpower/$appwarname/1.5.6.RELEASE/$appwarname-1.5.6.RELEASE.war";;
+		appwarkey="in/careerpower/$appwarname/1.3.3.RELEASE/$appwarname-1.3.3.RELEASE.war";;
 	erp)
 	 	appwarname="erp-webapp-war";
 		appwarkey="in/careerpower/erp/$appwarname/1.0.0/$appwarname-1.0.0.war";;
@@ -394,7 +406,7 @@ findAppWarName()
 		appwarkey="in/careerpower/$appwarname/1.0.0/$appwarname-1.0.0.war";;
 	Video-Streaming-server)
 		appwarname="video-service";
-		appwarkey="org/springframework/boot/$appwarname/1.4.4.RELEASE/$appwarname-1.4.4.RELEASE.war";;
+		appwarkey="org/springframework/boot/$appwarname/2.0.0.RELEASE/$appwarname-2.0.0.RELEASE.war";;
 	store-elastic-search)
 		appwarname="adda_package_search";
 		appwarkey="com/adda/search/$appwarname/0.0.1-SNAPSHOT/$appwarname-0.0.1-SNAPSHOT.war";;
@@ -419,7 +431,7 @@ findAppWarName()
 	couponservice)
 		appwarname="coupon-service-web";
 		appwarkey="in/careerpower/coupon/$appwarname/1.0.0/$appwarname-1.0.0.war";;
-	socialclient)
+	socialclient )
 		appwarname="socialclient";
 		appwarkey="in/careerpower/$appwarname/0.0.1/$appwarname-0.0.1.war";;
 	bigservice)
@@ -428,9 +440,12 @@ findAppWarName()
 	extraservice)
 		appwarname="extraservice";
 		appwarkey="$appwarname-$branch.zip";;
-        mars)
-                appwarname="exam-master";
-                appwarkey="in/careerpower/mars/$appwarname/1.0.0/$appwarname-1.0.0.war";;
+	mars)
+		appwarname="exam-master";
+		appwarkey="in/careerpower/mars/$appwarname/1.0.0/$appwarname-1.0.0.war";;
+	doubts)
+		appwarname="doubts";
+		appwarkey="in/careerpower/$appwarname/0.0.1/$appwarname-0.0.1.war";;
 	*)
 		unset appwarname;
 		unset appwarkey;;
@@ -444,8 +459,8 @@ findAppPath()
 	case $app in
 	userauth)
 		gitpath=$gitHome"servercp/userauth";;
-    ytsearch)
-        gitpath=$gitHome"ytsearch";;
+   	ytsearch)
+        	gitpath=$gitHome"ytsearch";;
 	bigservice)
 		gitpath=$gitHome"deployment-scripts/bigservices";;
 	extraservice)
@@ -532,8 +547,8 @@ findAppPath()
 		gitpath=$gitHome"storefront/storefront-jpa-entities";;
 	storefront-core)
 		gitpath=$gitHome"storefront/storefront-core";;
-	socialclient)
-		gitpath=$gitHome"socialclient";;
+	socialclient )
+		gitpath=$gitHome"socialclient";;	
 	mars)
 		gitpath=$gitHome"marsexammaster/admin";;
 	mars-common-entities)
@@ -544,6 +559,8 @@ findAppPath()
 		gitpath=$gitHome"adda247-unity";;
 	beta-store)
 		gitpath=$gitHome"web-store";;
+	doubts)
+		gitpath=$gitHome"doubts";;
 	*) 
 		unset gitpath;;
 	esac
@@ -565,9 +582,9 @@ findDependency()
 		buildPackage common-parent $gitpath $brch;;
 	contentadmin)
 		findAppPath admin-panel-commons;
-		buildPackage admin-panel-commons $gitpath masterspringfix; 
+		buildPackage admin-panel-commons $gitpath master; 
 		findAppPath commons-parent;
-		buildPackage commons-parent $gitpath master;;
+		buildPackage commons-parent $gitpath validtoken;;
 	erp)
 		findAppPath crud;
 		buildPackage crud $gitpath master;
@@ -575,90 +592,90 @@ findDependency()
 		buildPackage commons $gitpath master;;
 	storefront-core)
 		findAppPath commons;
-        buildPackage commons $gitpath master;;
+        	buildPackage commons $gitpath master;;
 	franchise)
 		findAppPath franchise-theme;
 		buildPackage franchise-theme $gitpath $brch;;
 	storefront-user)
 		findAppPath commons;
-        buildPackage commons $gitpath master;
+        	buildPackage commons $gitpath master;
 		findAppPath commons-parent;
-        buildPackage commons-parent $gitpath master;
+        	buildPackage commons-parent $gitpath validtoken;
 		findAppPath storefront-jpa-entities;
 		buildPackage storefront-jpa-entities $gitpath $brch;
 		findAppPath storefront-core;
 		buildPackage storefront-core $gitpath $brch;;
 	timeline)
 		findAppPath commons-parent;
-		buildPackage commons-parent $gitpath master;
+		buildPackage commons-parent $gitpath validtoken;
 		findAppPath magazines-service;
-		buildPackage magazines-service $gitpath masterspringfix; 
+		buildPackage magazines-service $gitpath master; 
 		findAppPath articles-service;
-		buildPackage articles-service $gitpath masterspringfix;
+		buildPackage articles-service $gitpath master;
 		findAppPath capsules-service;
-		buildPackage capsules-service $gitpath masterspringfix;
+		buildPackage capsules-service $gitpath master;
 		findAppPath currentaffairs-service;
-		buildPackage currentaffairs-service $gitpath masterspringfix;
+		buildPackage currentaffairs-service $gitpath master;
 		findAppPath jobalerts-service;
-		buildPackage jobalerts-service $gitpath masterspringfix;
+		buildPackage jobalerts-service $gitpath master;
 		findAppPath youtube-videos-service;
-		buildPackage youtube-videos-service $gitpath masterspringfix;
+		buildPackage youtube-videos-service $gitpath master;
 		findAppPath testseries;
-		buildPackage testseries $gitpath masterspringfix;;
+		buildPackage testseries $gitpath master;;
 	Video-Streaming-server)
 		findAppPath commons-parent;
-		buildPackage commons-parent $gitpath master;;
+		buildPackage commons-parent $gitpath validtoken;;
 	store-elastic-search)
 		findAppPath commons;
-        buildPackage commons $gitpath master;
+        	buildPackage commons $gitpath master;
 		findAppPath commons-parent;
-        buildPackage commons-parent $gitpath master;
-        findAppPath storefront-jpa-entities;
-        buildPackage storefront-jpa-entities $gitpath master;		
+       		buildPackage commons-parent $gitpath validtoken;
+        	findAppPath storefront-jpa-entities;
+        	buildPackage storefront-jpa-entities $gitpath master;		
 		findAppPath storefront-core;
 		buildPackage storefront-core $gitpath master;
 		findAppPath commons-parent;
-		buildPackage commons-parent $gitpath master;;
+		buildPackage commons-parent $gitpath validtoken;;
 	coupon-admin)
 		findAppPath coupon;
 		buildPackage coupon $gitpath $brch;
 		findAppPath commons-parent;
-		buildPackage commons-parent $gitpath master;
+		buildPackage commons-parent $gitpath validtoken;
 		findAppPath admin-panel-commons;
 		buildPackage admin-panel-commons $gitpath master;;
 	newcouponadmin)
 		findAppPath commons-parent;
-		buildPackage commons-parent $gitpath master;
+		buildPackage commons-parent $gitpath validtoken;
 		findAppPath storefront-jpa-entities;
-        buildPackage storefront-jpa-entities $gitpath master;
-        findAppPath storefront-core;
-        buildPackage storefront-core $gitpath master;
+        	buildPackage storefront-jpa-entities $gitpath master;
+        	findAppPath storefront-core;
+        	buildPackage storefront-core $gitpath master;
 		findAppPath admin-panel-commons;
 		buildPackage admin-panel-commons $gitpath masterspringfix;
 		findAppPath newcoupon;
-        buildPackage newcoupon $gitpath $brch;;
+        	buildPackage newcoupon $gitpath $brch;;
 	couponservice)
 		findAppPath commons-parent;
-		buildPackage commons-parent $gitpath master;	
+		buildPackage commons-parent $gitpath validtoken;	
 		findAppPath coupon;
 		buildPackage coupon $gitpath $brch;;
 	newcouponservice)
 		findAppPath commons-parent;
-		buildPackage commons-parent $gitpath master;
+		buildPackage commons-parent $gitpath validtoken;
 		findAppPath storefront-jpa-entities;
-        buildPackage storefront-jpa-entities $gitpath master;
-        findAppPath storefront-core;
-        buildPackage storefront-core $gitpath master;
+       		buildPackage storefront-jpa-entities $gitpath master;
+        	findAppPath storefront-core;
+        	buildPackage storefront-core $gitpath master;
 		findAppPath newcoupon;
 		buildPackage newcoupon $gitpath $brch;;
 	pushservice)
 		findAppPath commons-parent;
-		buildPackage commons-parent $gitpath master;
+		buildPackage commons-parent $gitpath validtoken;
 		findAppPath admin-panel-commons;
 		buildPackage admin-panel-commons $gitpath master;;
 	ranking)
 		findAppPath commons-parent;
-		buildPackage commons-parent $gitpath master;;
+		buildPackage commons-parent $gitpath validtoken;;
 	storefront-admin)
 		findAppPath admin-panel-commons;
 		buildPackage admin-panel-commons $gitpath master;
@@ -668,7 +685,10 @@ findDependency()
 		buildPackage storefront $gitpath $brch;;
 	testseries)
 		findAppPath commons-parent;
-		buildPackage commons-parent $gitpath master;;			
+		buildPackage commons-parent $gitpath validtoken;;			
+	doubts)
+		findAppPath commons;
+                buildPackage commons $gitpath master;;
 	*)
 		echo "No Dependency packages needed";;
 	esac
@@ -693,20 +713,20 @@ noteit()
 verifyAppName $appname;
 
 case  $appname in
-    beta-store)
+	beta-store)
 		echo "Building package $appname from $branch branch ";
 		env=$arg5;
-    	findAppPath $appname;
-    	cd $gitpath;
-    	git stash;
-        git fetch --all --tags --prune ;
-        git checkout tags/$tag;	
+	    	findAppPath $appname;
+	    	cd $gitpath;
+	    	git stash;
+        	git fetch --all --tags --prune ;
+	    	git checkout tags/$tag;	
 		if [[ $? -ne 0 ]]; then
-    	   	echo "Branch does not exist. Run again. Exiting"
-            exit $?
-        fi
-        git pull origin $branch;
-        buildtime=$(timestamp);
+    			echo "Branch does not exist. Run again. Exiting"
+        		exit $?
+	    	fi
+		git pull origin $branch;
+	    	buildtime=$(timestamp);
 		npm install;
 		bower install;
 		npm run build-prod;
@@ -715,18 +735,18 @@ case  $appname in
 	ytsearch)
 		echo "Building package $appname from $branch branch ";
 		env=$arg5;
-        findAppPath $appname;
-        cd $gitpath;
-        git stash;
-        git fetch;
-        git checkout $branch;
-        if [[ $? -ne 0 ]]; then
-        	echo "Branch does not exist. Run again. Exiting"
-        	exit $?
-        fi
-        git pull origin $branch;
-        buildtime=$(timestamp);
-        mv app/main.lua.${env} app/main.lua;
+	    	findAppPath $appname;
+	    	cd $gitpath;
+	    	git stash;
+	    	git fetch;
+	    	git checkout $branch;
+	    	if [[ $? -ne 0 ]]; then
+        		echo "Branch does not exist. Run again. Exiting"
+        		exit $?
+     		fi
+       		git pull origin $branch;
+		buildtime=$(timestamp);
+		mv app/main.lua.${env} app/main.lua;
 		zip ../$appname.zip -x *.git* -r * .[^.]* ;
 		mv ../$appname.zip /home/ec2-user/.m2/repository/$appname-$branch-$msg-$buildtime.zip;
 		aws s3 sync /home/ec2-user/.m2/repository s3://adda247-builds-repo --exclude "*" --include "*.war" --include "*.zip" --profile s3user

@@ -567,7 +567,7 @@ findDependency()
 		findAppPath admin-panel-commons;
 		buildPackage admin-panel-commons $gitpath masterspringfix; 
 		findAppPath commons-parent;
-		buildPackage commons-parent $gitpath master;;
+		buildPackage commons-parent $gitpath validtoken;;
 	erp)
 		findAppPath crud;
 		buildPackage crud $gitpath master;
@@ -581,16 +581,16 @@ findDependency()
 		buildPackage franchise-theme $gitpath $brch;;
 	storefront-user)
 		findAppPath commons;
-        buildPackage commons $gitpath master;
+        	buildPackage commons $gitpath master;
 		findAppPath commons-parent;
-        buildPackage commons-parent $gitpath master;
+        	buildPackage commons-parent $gitpath validtoken;
 		findAppPath storefront-jpa-entities;
 		buildPackage storefront-jpa-entities $gitpath $brch;
 		findAppPath storefront-core;
 		buildPackage storefront-core $gitpath $brch;;
 	timeline)
 		findAppPath commons-parent;
-		buildPackage commons-parent $gitpath master;
+		buildPackage commons-parent $gitpath validtoken;
 		findAppPath magazines-service;
 		buildPackage magazines-service $gitpath masterspringfix; 
 		findAppPath articles-service;
@@ -607,28 +607,28 @@ findDependency()
 		buildPackage testseries $gitpath masterspringfix;;
 	Video-Streaming-server)
 		findAppPath commons-parent;
-		buildPackage commons-parent $gitpath master;;
+		buildPackage commons-parent $gitpath validtoken;;
 	store-elastic-search)
 		findAppPath commons;
         buildPackage commons $gitpath master;
 		findAppPath commons-parent;
-        buildPackage commons-parent $gitpath master;
-        findAppPath storefront-jpa-entities;
-        buildPackage storefront-jpa-entities $gitpath master;		
+        	buildPackage commons-parent $gitpath validtoken;
+        	findAppPath storefront-jpa-entities;
+        	buildPackage storefront-jpa-entities $gitpath master;		
 		findAppPath storefront-core;
 		buildPackage storefront-core $gitpath master;
 		findAppPath commons-parent;
-		buildPackage commons-parent $gitpath master;;
+		buildPackage commons-parent $gitpath validtoken;;
 	coupon-admin)
 		findAppPath coupon;
 		buildPackage coupon $gitpath $brch;
 		findAppPath commons-parent;
-		buildPackage commons-parent $gitpath master;
+		buildPackage commons-parent $gitpath validtoken;
 		findAppPath admin-panel-commons;
 		buildPackage admin-panel-commons $gitpath master;;
 	newcouponadmin)
 		findAppPath commons-parent;
-		buildPackage commons-parent $gitpath master;
+		buildPackage commons-parent $gitpath validtoken;
 		findAppPath storefront-jpa-entities;
         buildPackage storefront-jpa-entities $gitpath master;
         findAppPath storefront-core;
@@ -639,12 +639,12 @@ findDependency()
         buildPackage newcoupon $gitpath $brch;;
 	couponservice)
 		findAppPath commons-parent;
-		buildPackage commons-parent $gitpath master;	
+		buildPackage commons-parent $gitpath validtoken;	
 		findAppPath coupon;
 		buildPackage coupon $gitpath $brch;;
 	newcouponservice)
 		findAppPath commons-parent;
-		buildPackage commons-parent $gitpath master;
+		buildPackage commons-parent $gitpath validtoken;
 		findAppPath storefront-jpa-entities;
         buildPackage storefront-jpa-entities $gitpath master;
         findAppPath storefront-core;
@@ -653,12 +653,12 @@ findDependency()
 		buildPackage newcoupon $gitpath $brch;;
 	pushservice)
 		findAppPath commons-parent;
-		buildPackage commons-parent $gitpath master;
+		buildPackage commons-parent $gitpath validtoken;
 		findAppPath admin-panel-commons;
 		buildPackage admin-panel-commons $gitpath master;;
 	ranking)
 		findAppPath commons-parent;
-		buildPackage commons-parent $gitpath master;;
+		buildPackage commons-parent $gitpath validtoken;;
 	storefront-admin)
 		findAppPath admin-panel-commons;
 		buildPackage admin-panel-commons $gitpath master;
@@ -668,7 +668,7 @@ findDependency()
 		buildPackage storefront $gitpath $brch;;
 	testseries)
 		findAppPath commons-parent;
-		buildPackage commons-parent $gitpath master;;			
+		buildPackage commons-parent $gitpath validtoken;;			
 	*)
 		echo "No Dependency packages needed";;
 	esac

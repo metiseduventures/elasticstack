@@ -28,5 +28,5 @@ processors:
 - add_fields:
     target: 'adda247'
     fields:
-      app_name: storeelasticsearch
-      env: staging
+      app_name: appname
+      env: evname

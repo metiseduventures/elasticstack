@@ -5,17 +5,22 @@
       # Access logs
   access:
     enabled: true
+    input:
+      fields:
+        type: apache_access
 
         # Set custom paths for the log files. If left empty,
         # Filebeat will choose the paths depending on your OS.
-    var.paths: ["/var/log/httpd/access_log*"]
+    var.paths: ["/var/log/httpd/access.log*"]
 
       # Error logs
   error:
     enabled: true
+    input:
+      fields:
+        type: apache_error
 
        # Set custom paths for the log files. If left empty,
        # Filebeat will choose the paths depending on your OS.
-    var.paths: ["/var/log/httpd/error_log*"]
-
+    var.paths: ["/var/log/httpd/error.log*"]
 

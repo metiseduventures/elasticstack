@@ -5,24 +5,20 @@
   # Access logs
   access:
     enabled: true
-    force_close_files: true
     input:
       fields:
-        env: staging
-        type: erp_Nginx_access
-
+        type: nginx_access
     # Set custom paths for the log files. If left empty,
     # Filebeat will choose the paths depending on your OS.
-    var.paths: ["/var/log/nginx/access_log*"]
+    var.paths: ["/var/log/nginx/access.log*"] 
 
   # Error logs
   error:
     enabled: true
     input:
       fields:
-        env: staging
-        type: erp_Nginx_error
+        type: nginx_error
 
     # Set custom paths for the log files. If left empty,
     # Filebeat will choose the paths depending on your OS.
-    var.paths: ["/var/log/nginx/error_log*"]
+    var.paths: ["/var/log/nginx/error.log*"]

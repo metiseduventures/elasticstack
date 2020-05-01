@@ -73,10 +73,7 @@ BSD
 
 Author Information
 ------------------
-###### vishant.sharma@opstree.com
-
-###### 9871665962
+###### amit
 
 ###### www.opstree.com
 
-###### blog.opstree.com

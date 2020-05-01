@@ -1,6 +1,6 @@
 ---
 galaxy_info:
-  author: Sandy
+  author: amit
   description: Ansible role to install logstash
   company: Opstree
   license: MIT

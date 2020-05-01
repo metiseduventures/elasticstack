@@ -70,4 +70,4 @@ References
 Author Information
 ------------------
 
-- Sumit Anand
+- Amit

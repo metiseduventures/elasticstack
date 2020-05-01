@@ -19,7 +19,7 @@ stg3="stagingstoreuserv StoreFrontAdminStagingv stagingadminuiv";
 stg4="StoreElasticSearchStaging contentadmin-stag1-env CouponAdminStaging CouponServiceStaging Timeline-stag-env pushservice-stag-env analyticsstaging ranking-stag-env";
 stg5="userauth-staging videoserverstaging testseriesstaging bigservice-stag-env extraservice-staging-env";
 stg6="stagingadda247 Adda247Unity-env-staging erpstaging franchisestaging";
-stg7="newcouponadminstaging newcouponservicestaging ytsearch-staging stagingmars";
+stg7="socialclientstaging newcouponadminstaging newcouponservicestaging ytsearch-staging stagingmars doubtsstaging";
 stg8="StoreElasticSearchStaging2 StoreElasticSearchStaging socialclientstaging";
 
 
@@ -34,16 +34,16 @@ do
 	aws autoscaling update-auto-scaling-group --auto-scaling-group-name $ASG --min-size $size --max-size $size;
 done
 
-stgmum1="stagingdoubts";
+#stgmum1="stagingdoubts";
 
 
-for i in $stgmum1
-do
-        echo "Fetching autoscaling groups of environments: $i";
-        asg="$(aws elasticbeanstalk describe-environment-resources --environment-name $i --output=text --profile mumbai)";
-        ASG=`echo "${asg}" | awk -F"\t" '$1=="AUTOSCALINGGROUPS" {print $2}'`;
-        echo "Triggering $action on auto scaling group $ASG";
-        groupmsg="Triggering "$action" on "$i;
-        python /home/ec2-user/devops/devops-bot.py "${groupmsg}";
-        aws autoscaling update-auto-scaling-group --auto-scaling-group-name $ASG --min-size $size --max-size $size --profile mumbai;
-done
+#for i in $stgmum1
+#do
+#        echo "Fetching autoscaling groups of environments: $i";
+#        asg="$(aws elasticbeanstalk describe-environment-resources --environment-name $i --output=text --profile mumbai)";
+#        ASG=`echo "${asg}" | awk -F"\t" '$1=="AUTOSCALINGGROUPS" {print $2}'`;
+#        echo "Triggering $action on auto scaling group $ASG";
+#        groupmsg="Triggering "$action" on "$i;
+#        python /home/ec2-user/devops/devops-bot.py "${groupmsg}";
+#        aws autoscaling update-auto-scaling-group --auto-scaling-group-name $ASG --min-size $size --max-size $size --profile mumbai;
+#done

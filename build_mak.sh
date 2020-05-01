@@ -180,10 +180,8 @@ findEnvName()
 	contentadmin )
 		if [ "$arg5" = "staging" ]; then
 			envName="contentadmin-stag1-env";
-		elif [ "$arg5" = "qa1" ]; then
-			envName="contentadminqa1";
 		elif [ "$arg5" = "production" ]; then
-			envName="contentadminprod";
+			envName="contentadminproduction";
 		fi;;
 	newcouponadmin )
 		if [ "$arg5" = "staging" ]; then
@@ -223,11 +221,9 @@ findEnvName()
 		fi;;
 	extraservice )
 		if [ "$arg5" = "staging" ]; then
-			envName="extraservice-staging-env";
-		elif [ "$arg5" = "qa1" ]; then
-			envName="extraserviceqa1";
+			envName="extraservicestaging";
 		elif [ "$arg5" = "production" ]; then
-			envName="extraservice-env2";
+			envName="extraserviceproduction";
 		fi;;
 	franchise )
 		if [ "$arg5" = "staging" ]; then

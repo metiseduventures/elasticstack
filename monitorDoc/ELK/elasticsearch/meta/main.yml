@@ -1,6 +1,6 @@
 ---
 galaxy_info:
-    author: sumitopstree
+    author: amit
     description: Install Elasticsearch in Standalone mode
     license: "license (BSD, MIT)"
 

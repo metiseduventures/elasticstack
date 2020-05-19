@@ -1,0 +1,62 @@
+---
+- name: Creating blackbox_exporter system group
+  group:
+    name: "{{blackbox_exporter_group}}"
+    system: true
+    state: present
+
+- name: Creating blackbox_exporter system user
+  user:
+    name: "{{blackbox_exporter_user}}"
+    system: true
+    shell: "/sbin/nologin"
+    group: "{{blackbox_exporter_group}}"
+    create_home: false
+
+- name: Downloading blackbox_exporter binary.
+  unarchive:
+    src: "{{download_url}}"
+    dest: "{{blackbox_exporter_download_location}}"
+    remote_src: true
+    creates: "{{blackbox_exporter_folder}}"
+
+- name: Copying blackbox_exporter binary files to /usr/local/bin
+  copy:
+    src: "{{blackbox_exporter_folder}}"
+    dest: "{{binary_destination}}"
+    remote_src: true
+    mode: 0750
+    owner: "{{blackbox_exporter_user}}"
+    group: "{{blackbox_exporter_group}}"
+  notify:
+    - restart blackbox exporter
+
+- name: Creating directory in etc for blackbox_exporter
+  file:
+    path: /etc/blackbox_exporter
+    state: directory
+
+- name: Configuring blackbox_exporter
+  template:
+    src: blackbox_exporter.yml.j2
+    dest: /etc/blackbox_exporter/blackbox_exporter.yml
+    owner: "{{blackbox_exporter_user}}"
+    group: "{{blackbox_exporter_group}}"
+    mode: 0644
+
+- name: Creating systemd service unit
+  template:
+    src: blackbox_exporter.service.j2
+    dest: /etc/systemd/system/blackbox_exporter.service
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - restart blackbox exporter
+
+- name: Starting and enabling blackbox exporter
+  systemd:
+    daemon_reload: true
+    name: blackbox_exporter
+    state: started
+    enabled: true

@@ -1,6 +1,6 @@
 ---
 galaxy_info:
-  author: Vishant
+  author: amit
   description: Ansible role to install Kibana
   company: Opstree
   license: MIT

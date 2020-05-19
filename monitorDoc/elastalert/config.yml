@@ -1,0 +1,26 @@
+rules_folder: rules
+appName: "elastalert-server"
+port: 3030
+wsport: 3333
+verbose: true
+debug: false
+run_every:
+  minutes: 5
+
+buffer_time:
+  minutes: 15
+
+es_host: localhost
+
+es_port: 9200
+
+es_username: elastic
+es_password: adda247
+
+writeback_index: elastalert_status
+writeback_alias: elastalert_alerts
+
+alert_time_limit:
+  days: 2
+
+

@@ -1,0 +1,7 @@
+---
+- name: configuration of node exporter
+  hosts: data2
+  become: true
+  roles: 
+    - /home/amit.kumar2/Documents/devops/node_exporter/ansible_role
+

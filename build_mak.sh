@@ -171,15 +171,13 @@ findEnvName()
 		fi;;
 	bigservice )
 		if [ "$arg5" = "staging" ]; then
-			envName="bigservice-stag-env";
-		elif [ "$arg5" = "qa1" ]; then
-			envName="bigserviceqa1";
+			envName="bigservicestaging";
 		elif [ "$arg5" = "production" ]; then
-			envName="bigservice-env";
+			envName="bigserviceproduction";
 		fi;;
 	contentadmin )
 		if [ "$arg5" = "staging" ]; then
-			envName="contentadmin-stag1-env";
+			envName="contentadminstaging";
 		elif [ "$arg5" = "production" ]; then
 			envName="contentadminproduction";
 		fi;;
@@ -214,8 +212,6 @@ findEnvName()
 	erp )
 		if [ "$arg5" = "staging" ]; then
           		envName="erpstaging";
-		elif [ "$arg5" = "qa1" ]; then
-			envName="erpqa1";
 		elif [ "$arg5" = "production" ]; then
 			envName="erpProduction";
 		fi;;
@@ -229,29 +225,23 @@ findEnvName()
 		if [ "$arg5" = "staging" ]; then
 			envName="franchisestaging";
 		elif [ "$arg5" = "production" ]; then
-			envName="Franchise-env1";
+			envName="franchiseprod";
 		fi;;
 	pushservice )
 		if [ "$arg5" = "staging" ]; then
-			envName="pushservice-stag-env";
-		elif [ "$arg5" = "qa1" ]; then
-			envName="pushserviceqa1";
+			envName="pushservicestaging";
 		elif [ "$arg5" = "production" ]; then
-			envName="pushservice-env";
+			envName="pushserviceproduction";
 		fi;;
 	ranking )
 		if [ "$arg5" = "staging" ]; then
-			envName="ranking-stag-env";
-		elif [ "$arg5" =  "qa1" ]; then
-			envName="rankingqa1";
+			envName="rankingstaging";
 		elif [ "$arg5" = "production" ]; then
-			envName="ranking-env";
+			envName="rankingproduction";
 		fi;;
 	store-elastic-search )
 		if [ "$arg5" = "staging" ]; then
 			envName="StoreElasticSearchStaging";
-		elif [ "$arg5" = "qa1" ]; then
-			envName="storeelasticsearchqa1";
 		elif [ "$arg5" = "production" ]; then
 			envName="StoreElasticSearch-env";
 		fi;;

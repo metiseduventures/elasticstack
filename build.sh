@@ -128,8 +128,8 @@ findEnvName()
     	userauth )
 		if [ "$arg5" = "staging" ]; then
         		envName="userauth-staging";
-		elif [ "$arg5" = "qa1" ]; then
-			envName="userauthqa1";
+		elif [ "$arg5" = "staging2" ]; then
+			envName="userauth-staging2";
 		elif [ "$arg5" = "production" ]; then
 			envName="userauth-production";
 		fi;;
@@ -173,15 +173,13 @@ findEnvName()
 		fi;;
 	bigservice )
 		if [ "$arg5" = "staging" ]; then
-			envName="bigservice-stag-env";
-		elif [ "$arg5" = "qa1" ]; then
-			envName="bigserviceqa1";
+			envName="bigservicestaging";
 		elif [ "$arg5" = "production" ]; then
-			envName="bigservice-env";
+			envName="bigserviceproduction";
 		fi;;
 	contentadmin )
 		if [ "$arg5" = "staging" ]; then
-			envName="contentadmin-stag1-env";
+			envName="contentadminstaging";
 		elif [ "$arg5" = "production" ]; then
 			envName="contentadminproduction";
 		fi;;
@@ -216,8 +214,6 @@ findEnvName()
 	erp )
 		if [ "$arg5" = "staging" ]; then
           		envName="erpstaging";
-		elif [ "$arg5" = "qa1" ]; then
-			envName="erpqa1";
 		elif [ "$arg5" = "production" ]; then
 			envName="erpProduction";
 		fi;;
@@ -231,29 +227,25 @@ findEnvName()
 		if [ "$arg5" = "staging" ]; then
 			envName="franchisestaging";
 		elif [ "$arg5" = "production" ]; then
-			envName="Franchise-env1";
+			envName="franchiseprod";
 		fi;;
 	pushservice )
 		if [ "$arg5" = "staging" ]; then
-			envName="pushservice-stag-env";
-		elif [ "$arg5" = "qa1" ]; then
-			envName="pushserviceqa1";
+			envName="pushservicestaging";
 		elif [ "$arg5" = "production" ]; then
-			envName="pushservice-env";
+			envName="pushserviceproduction";
 		fi;;
 	ranking )
 		if [ "$arg5" = "staging" ]; then
-			envName="ranking-stag-env";
-		elif [ "$arg5" =  "qa1" ]; then
-			envName="rankingqa1";
+			envName="rankingstaging";
 		elif [ "$arg5" = "production" ]; then
-			envName="ranking-env";
+			envName="rankingproduction";
 		fi;;
 	store-elastic-search )
 		if [ "$arg5" = "staging" ]; then
 			envName="StoreElasticSearchStaging";
-		elif [ "$arg5" = "qa1" ]; then
-			envName="storeelasticsearchqa1";
+		elif [ "$arg5" = "staging2" ]; then
+			envName="search2prod";
 		elif [ "$arg5" = "production" ]; then
 			envName="StoreElasticSearch-env";
 		fi;;
@@ -305,9 +297,15 @@ findEnvName()
                 if [ "$arg5" = "staging" ]; then
                         envName="stagingmars";
                 fi;;
+        appInstall )
+                if [ "$arg5" = "production" ]; then
+                        envName="appinstallproduction";
+                fi;;
 	doubts )
                 if [ "$arg5" = "staging" ]; then
                         envName="doubtsstaging";
+		elif [ "$arg5" = "staging2" ]; then
+			envName="doubtsprod2";
 		elif [ "$arg5" = "production" ]; then
 			envName="doubtsprod";
                 fi;;
@@ -881,10 +879,11 @@ case  $appname in
 		cp $gitHome/temp/servercp/miscellaneous/miscellaneous-service/target/miscellaneous-service-1.0.0.war $gitHome/bundle/miscellaneous.war;
 		cp $gitHome/temp/servercp/appConfig/target/appConfig-1.0.0.war.original $gitHome/bundle/appConfig.war;
 		cp $gitHome/temp/servercp/paymentstatus/target/paymentstatus-1.4.2.RELEASE.war.original $gitHome/bundle/paymentstatus.war;
+		cp -r $gitHome/deployment-scripts/extraservices/.ebextensions $gitHome/bundle/
 	 	cd $gitHome/bundle;
 		buildtime=$(timestamp);
 		findAppWarName $appname;
-		zip -r extraservice-$branch.zip appConfig.war analytics.war miscellaneous.war paymentstatus.war 
+		zip -r extraservice-$branch.zip appConfig.war analytics.war miscellaneous.war paymentstatus.war .ebextensions
 		cp $gitHome/bundle/extraservice-$branch.zip /home/ec2-user/.m2/repository/$appwarname-$branch-$buildtime.war;;		
 	*)
 		#build dependency packages 

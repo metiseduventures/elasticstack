@@ -16,11 +16,11 @@ esac
 stg1="stagingstoreuser1 StoreFrontAdminStaging1 stagingadminui";
 stg2="stagingstoreuser2 StoreFrontAdminStaging2 stagingadminui2";
 stg3="stagingstoreuserv StoreFrontAdminStagingv stagingadminuiv";
-stg4="StoreElasticSearchStaging contentadmin-stag1-env CouponAdminStaging CouponServiceStaging Timeline-stag-env pushservice-stag-env analyticsstaging ranking-stag-env";
-stg5="userauth-staging videoserverstaging testseriesstaging bigservice-stag-env extraservice-staging-env";
+stg4="StoreElasticSearchStaging contentadminstaging CouponAdminStaging CouponServiceStaging Timeline-stag-env pushservicestaging analyticsstaging rankingstaging";
+stg5="userauth-staging videoserverstaging testseriesstaging bigservicestaging extraservicestaging";
 stg6="stagingadda247 Adda247Unity-env-staging erpstaging franchisestaging";
-stg7="socialclientstaging newcouponadminstaging newcouponservicestaging ytsearch-staging stagingmars doubtsstaging";
-stg8="StoreElasticSearchStaging2 StoreElasticSearchStaging socialclientstaging";
+stg7="socialclientstaging newcouponadminstaging newcouponservicestaging ytsearch-staging doubtsstaging";
+stg8="StoreElasticSearchStaging2 StoreElasticSearchStaging socialclientstaging stagingmars";
 
 
 for i in $stg1 $stg4 $stg5 $stg7 

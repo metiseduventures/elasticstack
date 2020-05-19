@@ -32,7 +32,7 @@ fi
 	 
 #Environment Variables
 gitHome="/home/ec2-user/git/";
-msg="build-script";
+msg="build2-script";
 user="devops";
 customBuild=false;
 dbhost="localhost";
@@ -173,19 +173,15 @@ findEnvName()
 		fi;;
 	bigservice )
 		if [ "$arg5" = "staging" ]; then
-			envName="bigservice-stag-env";
-		elif [ "$arg5" = "qa1" ]; then
-			envName="bigserviceqa1";
+			envName="bigservicestaging";
 		elif [ "$arg5" = "production" ]; then
-			envName="bigservice-env";
+			envName="bigserviceproduction";
 		fi;;
 	contentadmin )
 		if [ "$arg5" = "staging" ]; then
-			envName="contentadmin-stag1-env";
-		elif [ "$arg5" = "qa1" ]; then
-			envName="contentadminqa1";
+			envName="contentadminstaging";
 		elif [ "$arg5" = "production" ]; then
-			envName="contentadminprod";
+			envName="contentadminproduction";
 		fi;;
 	newcouponadmin )
 		if [ "$arg5" = "staging" ]; then
@@ -225,11 +221,9 @@ findEnvName()
 		fi;;
 	extraservice )
 		if [ "$arg5" = "staging" ]; then
-			envName="extraservice-staging-env";
-		elif [ "$arg5" = "qa1" ]; then
-			envName="extraserviceqa1";
+			envName="extraservicestaging";
 		elif [ "$arg5" = "production" ]; then
-			envName="extraservice-env2";
+			envName="extraserviceproduction";
 		fi;;
 	franchise )
 		if [ "$arg5" = "staging" ]; then
@@ -239,15 +233,15 @@ findEnvName()
 		fi;;
 	pushservice )
 		if [ "$arg5" = "staging" ]; then
-			envName="pushservice-stag-env";
+			envName="pushservicestaging";
 		elif [ "$arg5" = "qa1" ]; then
 			envName="pushserviceqa1";
 		elif [ "$arg5" = "production" ]; then
-			envName="pushservice-env";
+			envName="pushserviceproduction";
 		fi;;
 	ranking )
 		if [ "$arg5" = "staging" ]; then
-			envName="ranking-stag-env";
+			envName="rankingstaging";
 		elif [ "$arg5" =  "qa1" ]; then
 			envName="rankingqa1";
 		elif [ "$arg5" = "production" ]; then

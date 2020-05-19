@@ -793,15 +793,15 @@ case  $appname in
 		exit 0;;	
 	bigservice)
         	echo "Building package $appname from $branch branch ";
-        	cd $gitHome/deployment-scripts/bigservices;
+        	cd $gitHome/servercp/bigservices;
         	git stash;
         	git fetch;
-	    	git checkout dev;
+	    	git checkout master;
         	if [[ $? -ne 0 ]]; then
         		echo "Branch does not exist. Run again. Exiting";
         		exit $?
         	fi
-        	git pull origin dev;
+        	git pull origin master;
 		rm -rf $gitHome/{temp,bundle};
 		mkdir $gitHome/{temp,bundle};
 		cd $gitHome/temp;
@@ -813,7 +813,7 @@ case  $appname in
         		exit $?
         	fi
         	git pull origin $branch;
-		cp $gitHome/deployment-scripts/bigservices/pom.xml $gitHome/temp/servercp/;
+		cp $gitHome/servercp/bigservices/pom.xml $gitHome/temp/servercp/;
 		/usr/local/src/apache-maven/bin/mvn clean install;
 		if [[ $? -ne 0 ]]; then
         		echo "Build Failed. Check code again. Exiting";
@@ -830,7 +830,7 @@ case  $appname in
 		cp $gitHome/temp/servercp/GlobalConfig/target/GlobalConfig-1.0.0.war $gitHome/bundle/GlobalConfig.war;
 		cp $gitHome/temp/servercp/youtube-videos/youtube-videos-wrapper/target/youtube-videos-wrapper-1.0.0.war.original $gitHome/bundle/youtube-videos.war;
 		cp $gitHome/temp/servercp/bookmarks/target/bookmarks-1.0.0.war.original $gitHome/bundle/bookmarks.war;
-		cp -r $gitHome/deployment-scripts/bigservices/.ebextensions $gitHome/bundle/
+		cp -r $gitHome/servercp/bigservices/.ebextensions $gitHome/bundle/
 		cd $gitHome/bundle;
 		buildtime=$(timestamp);
 		findAppWarName $appname;
@@ -849,15 +849,15 @@ case  $appname in
 		exit 0;;
 	extraservice)
 		echo "Building package $appname from $brnch branch ";
-		cd $gitHome/deployment-scripts/extraservices;
+		cd $gitHome/servercp/extraservices;
 		git stash;
 		git fetch;
-		git checkout dev;
+		git checkout master;
 		if [[ $? -ne 0 ]]; then
     			echo "Branch does not exist. Run again. Exiting";
     			exit $?
 		fi
-		git pull origin $brnch;
+		git pull origin master;
 		rm -rf $gitHome/{temp,bundle};
 		mkdir $gitHome/{temp,bundle};
 		cd $gitHome/temp;
@@ -869,7 +869,7 @@ case  $appname in
            	 	exit $?
         	fi
 		git pull origin $brnch;
-		cp $gitHome/deployment-scripts/extraservices/pom.xml $gitHome/temp/servercp/;
+		cp $gitHome/servercp/extraservices/pom.xml $gitHome/temp/servercp/;
 		/usr/local/src/apache-maven/bin/mvn clean install;
         	if [[ $? -ne 0 ]]; then
         		echo "Build Failed. Check code again. Exiting";
@@ -879,7 +879,7 @@ case  $appname in
 		cp $gitHome/temp/servercp/miscellaneous/miscellaneous-service/target/miscellaneous-service-1.0.0.war $gitHome/bundle/miscellaneous.war;
 		cp $gitHome/temp/servercp/appConfig/target/appConfig-1.0.0.war.original $gitHome/bundle/appConfig.war;
 		cp $gitHome/temp/servercp/paymentstatus/target/paymentstatus-1.4.2.RELEASE.war.original $gitHome/bundle/paymentstatus.war;
-		cp -r $gitHome/deployment-scripts/extraservices/.ebextensions $gitHome/bundle/
+		cp -r $gitHome/servercp/extraservices/.ebextensions $gitHome/bundle/
 	 	cd $gitHome/bundle;
 		buildtime=$(timestamp);
 		findAppWarName $appname;

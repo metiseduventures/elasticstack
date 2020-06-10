@@ -128,8 +128,6 @@ findEnvName()
     	userauth )
 		if [ "$arg5" = "staging" ]; then
         		envName="userauth-staging";
-		elif [ "$arg5" = "staging2" ]; then
-			envName="userauth-staging2";
 		elif [ "$arg5" = "production" ]; then
 			envName="userauth-production";
 		fi;;
@@ -166,8 +164,6 @@ findEnvName()
 	analytics )
 		if [ "$arg5" = "staging" ]; then
 			envName="analyticsstaging";
-		elif [ "$arg5" = "qa1" ]; then
-			envName="analyticsqa1";
 		elif [ "$arg5" = "production" ]; then
 			envName="analyticsprod";
 		fi;;
@@ -300,6 +296,10 @@ findEnvName()
         appInstall )
                 if [ "$arg5" = "production" ]; then
                         envName="appinstallproduction";
+                fi;;
+        mailingservice )
+                if [ "$arg5" = "production" ]; then
+                        envName="mailingservice";
                 fi;;
 	doubts )
                 if [ "$arg5" = "staging" ]; then
@@ -683,6 +683,9 @@ findDependency()
 	doubts)
 		findAppPath commons;
                 buildPackage commons $gitpath master;;
+	socialclient)
+                findAppPath commons-parent;
+                buildPackage commons-parent $gitpath master;;
 	*)
 		echo "No Dependency packages needed";;
 	esac
@@ -741,6 +744,7 @@ case  $appname in
        		git pull origin $branch;
 		buildtime=$(timestamp);
 		mv app/main.lua.${env} app/main.lua;
+		mv app/youtube.lua.${env} app/youtube.lua;
 		zip ../$appname.zip -x *.git* -r * .[^.]* ;
 		mv ../$appname.zip /home/ec2-user/.m2/repository/$appname-$branch-$msg-$buildtime.zip;
 		aws s3 sync /home/ec2-user/.m2/repository s3://adda247-builds-repo --exclude "*" --include "*.war" --include "*.zip" --profile s3user

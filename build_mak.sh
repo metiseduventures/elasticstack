@@ -164,8 +164,6 @@ findEnvName()
 	analytics )
 		if [ "$arg5" = "staging" ]; then
 			envName="analyticsstaging";
-		elif [ "$arg5" = "qa1" ]; then
-			envName="analyticsqa1";
 		elif [ "$arg5" = "production" ]; then
 			envName="analyticsprod";
 		fi;;

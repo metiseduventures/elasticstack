@@ -573,12 +573,12 @@ findDependency()
 		buildPackage mars-commons $gitpath $brch;;
 	userauth)
 		findAppPath common-parent;
-		buildPackage common-parent $gitpath $brch;;
+		buildPackage common-parent $gitpath isActiveFix;;
 	contentadmin)
 		findAppPath admin-panel-commons;
 		buildPackage admin-panel-commons $gitpath master; 
 		findAppPath commons-parent;
-		buildPackage commons-parent $gitpath validtoken;;
+		buildPackage commons-parent $gitpath isActiveFix;;
 	erp)
 		findAppPath crud;
 		buildPackage crud $gitpath master;
@@ -594,7 +594,7 @@ findDependency()
 		findAppPath commons;
         	buildPackage commons $gitpath master;
 		findAppPath commons-parent;
-        	buildPackage commons-parent $gitpath validtoken;
+        	buildPackage commons-parent $gitpath isActiveFix;
 		findAppPath storefront-jpa-entities;
 		buildPackage storefront-jpa-entities $gitpath $brch;
 		findAppPath storefront-core;

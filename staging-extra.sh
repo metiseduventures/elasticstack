@@ -25,7 +25,7 @@ stg8="StoreElasticSearchStaging2 StoreElasticSearchStaging";
 
 
 
-for i in $stg2 $stg3 $stg6 
+for i in $stg2 $stg3 $stg6 $stg9 
 do
 	echo "Fetching autoscaling groups of environments: $i";
 	asg="$(aws elasticbeanstalk describe-environment-resources --environment-name $i --output=text)";

@@ -743,8 +743,8 @@ case  $appname in
      		fi
        		git pull origin $branch;
 		buildtime=$(timestamp);
-		mv app/main.lua.${env} app/main.lua;
-		mv app/youtube.lua.${env} app/youtube.lua;
+		#mv app/main.lua.${env} app/main.lua;
+		#mv app/youtube.lua.${env} app/youtube.lua;
 		zip ../$appname.zip -x *.git* -r * .[^.]* ;
 		mv ../$appname.zip /home/ec2-user/.m2/repository/$appname-$branch-$msg-$buildtime.zip;
 		aws s3 sync /home/ec2-user/.m2/repository s3://adda247-builds-repo --exclude "*" --include "*.war" --include "*.zip" --profile s3user

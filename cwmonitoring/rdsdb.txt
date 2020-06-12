@@ -1,0 +1,12 @@
+extradb-prod
+franchise-prod
+pushservicedb-prod
+rankanalytics-prod
+storefront-analytics-prod-snapshot-db
+storefront-prod-db
+timelinedb-prod
+userdb-prod
+video-streaming-db-prod
+bigservicedb-prod
+coupon-prod-db
+erpdb-prod

@@ -1,0 +1,22 @@
+[
+  {
+    "Namespace": "aws:elasticbeanstalk:managedactions",
+    "OptionName": "ManagedActionsEnabled",
+    "Value": "true"
+  },
+  {
+    "Namespace": "aws:elasticbeanstalk:managedactions",
+    "OptionName": "PreferredStartTime",
+    "Value": "Tue:20:15"
+  },
+  {
+    "Namespace": "aws:elasticbeanstalk:managedactions:platformupdate",
+    "OptionName": "UpdateLevel",
+    "Value": "minor"
+  },
+  {
+    "Namespace": "aws:elasticbeanstalk:managedactions:platformupdate",
+    "OptionName": "InstanceRefreshEnabled",
+    "Value": "true"
+  }
+]

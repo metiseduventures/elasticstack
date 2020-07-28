@@ -1,0 +1,8 @@
+[
+  { 
+    "Namespace": "aws:elasticbeanstalk:environment:process:default",
+    "OptionName": "DeregistrationDelay",
+    "Value": "120"
+  }
+]
+

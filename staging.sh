@@ -18,8 +18,8 @@ stg2="stagingstoreuser2 StoreFrontAdminStaging2 stagingadminui2";
 stg3="stagingstoreuserv StoreFrontAdminStagingv stagingadminuiv";
 stg4="StoreElasticSearchStaging contentadminstaging CouponAdminStaging CouponServiceStaging Timeline-stag-env pushservicestaging analyticsstaging rankingstaging";
 stg5="userauth-staging videoserverstaging testseriesstaging bigservicestaging extraservicestaging";
-stg6="stagingadda247 Adda247Unity-env-staging erpstaging franchisestaging";
-stg7="socialclientstaging newcouponadminstaging newcouponservicestaging ytsearch-staging doubtsstaging";
+stg6="stagingadda247 erpstaging franchisestaging";
+stg7="socialclientstaging newcouponadminstaging newcouponservicestaging ytsearch-staging doubtsstaging Adda247Unity-env-staging staging2adda247 staging3adda247 stagingadda247 stagingvadda247";
 stg8="StoreElasticSearchStaging2 StoreElasticSearchStaging socialclientstaging stagingmars";
 
 

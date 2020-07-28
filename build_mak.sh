@@ -885,6 +885,10 @@ aws elasticbeanstalk create-application-version --application-name $appnametwist
 
 findEnvName $appname $arg5;
 if [ ! -z "$envName" ];then
+	while [ `aws elasticbeanstalk describe-environment-health --environment-name $envName --attribute-names All --query 'Status' --output=text` != "Ready" ]
+                do
+                        sleep 5;
+                done
 	aws elasticbeanstalk update-environment --environment-name $envName --version-label "$appname-$branch-$msg-$buildtime";
 	if [[ $? -ne 0 ]]; then
     		echo "Environment Deploy Failed. Check again. Exiting";

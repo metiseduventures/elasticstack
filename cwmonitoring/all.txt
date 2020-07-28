@@ -25,7 +25,6 @@ doubtsstaging
 socialclientprod
 socialclientstaging
 ytsearchprod
-stagingmars
 newcouponserviceprod
 newcouponadminprod
 newcouponservicestaging
@@ -35,8 +34,6 @@ testseriesprod
 newcouponadminstaging
 analyticsprod
 analyticsstaging
-stagingadda247
-stream
 adminuiProduction
 stagingadminuiv
 stagingadminui2

@@ -1,3 +1,4 @@
+adda247prod
 rankingproduction
 mailingservice
 appinstallproduction
@@ -21,6 +22,5 @@ userauth-production
 couponserviceprod
 couponadminprod
 StorefrontAdminProduction
-Adda247Unity-env-prod
 StoreElasticSearch-env
 timeline-env

@@ -274,7 +274,9 @@ findEnvName()
                         envName="appinstallproduction";
                 fi;;
         mailingservice )
-                if [ "$arg5" = "production" ]; then
+                if [ "$arg5" = "staging" ]; then
+                        envName="stagingmailingservice";
+                elif [ "$arg5" = "production" ]; then
                         envName="mailingservice";
                 fi;;
 	doubts )

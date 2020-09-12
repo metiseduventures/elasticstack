@@ -54,7 +54,7 @@ verifyAppName()
 {
 	local app=$1;
 	case "$app" in
-		adda247 | paymentservice | erp | userauth | bigservice | analytics | appInstall | contentadmin | franchise | mailingservice | pushservice | ranking | testseries | timeline | Video-Streaming-server | store-elastic-search | coupon-admin | couponservice | extraservice | socialclient | newcouponadmin | ytsearch | newcouponservice | mars | Video-Streaming-server | doubts ) 
+		adda247 | livedoubts | paymentservice | erp | userauth | bigservice | analytics | appInstall | contentadmin | franchise | mailingservice | pushservice | ranking | testseries | timeline | Video-Streaming-server | store-elastic-search | coupon-admin | couponservice | extraservice | socialclient | newcouponadmin | ytsearch | newcouponservice | mars | Video-Streaming-server | doubts ) 
 		;;
 
 		admin-panel-ui | storefront-user | storefront-admin | adda247 )
@@ -104,6 +104,10 @@ findEnvName()
     	paymentservice )
 		if [ "$arg5" = "staging" ]; then
         		envName="paymentservicestaging";
+		fi;;
+    	livedoubts )
+		if [ "$arg5" = "staging" ]; then
+        		envName="staginglivedoubts";
 		fi;;
 	ytsearch )
 		if [ "$arg5" = "staging" ]; then
@@ -346,6 +350,9 @@ findAppWarName()
 	paymentservice)
 		appwarname="payment";
 		appwarkey="in/careerpower/$appwarname/1.0.0/$appwarname-1.0.0.war";;
+	livedoubts)
+		appwarname="livedoubts";
+		appwarkey="com/adda247/$appwarname/0.0.1/$appwarname-0.0.1.war";;
 	admin-panel-ui)
 		appwarname="adminpaneluimaven";
 		appwarkey="org/springframework/boot/$appwarname/0.0.1/$appwarname-0.0.1.war";;
@@ -436,6 +443,8 @@ findAppPath()
 		gitpath=$gitHome"servercp/userauth";;
 	paymentservice)
 		gitpath=$gitHome"paymentservice";;
+	livedoubts)
+		gitpath=$gitHome"livedoubts";;
    	ytsearch)
         	gitpath=$gitHome"ytsearch";;
 	bigservice)

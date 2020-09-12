@@ -19,7 +19,7 @@ stg9="stagingstoreuser3 storefrontadminstaging3 stagingadminui3";
 stg3="stagingstoreuserv StoreFrontAdminStagingv stagingadminuiv";
 stg4="StoreElasticSearchStaging contentadminstaging CouponAdminStaging CouponServiceStaging Timeline-stag-env pushservicestaging analyticsstaging rankingstaging";
 stg5="userauth-staging videoserverstaging testseries-stag-env bigservicestaging extraservicestaging";
-stg6="erpstaging franchisestaging";
+stg6="erpstaging franchisestaging stagingmailingservice";
 stg7="Adda247Unity-env-staging socialapi-staging stagingadda247 search2prod";
 stg8="StoreElasticSearchStaging2 StoreElasticSearchStaging";
 

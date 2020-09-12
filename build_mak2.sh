@@ -32,7 +32,7 @@ fi
 	 
 #Environment Variables
 gitHome="/home/ec2-user/git/";
-msg="build-script-mak2";
+msg="build-script-mak";
 user="devops";
 customBuild=false;
 dbhost="localhost";
@@ -164,8 +164,6 @@ findEnvName()
 	analytics )
 		if [ "$arg5" = "staging" ]; then
 			envName="analyticsstaging";
-		elif [ "$arg5" = "qa1" ]; then
-			envName="analyticsqa1";
 		elif [ "$arg5" = "production" ]; then
 			envName="analyticsprod";
 		fi;;
@@ -212,8 +210,6 @@ findEnvName()
 	erp )
 		if [ "$arg5" = "staging" ]; then
           		envName="erpstaging";
-		elif [ "$arg5" = "qa1" ]; then
-			envName="erpqa1";
 		elif [ "$arg5" = "production" ]; then
 			envName="erpProduction";
 		fi;;
@@ -227,29 +223,23 @@ findEnvName()
 		if [ "$arg5" = "staging" ]; then
 			envName="franchisestaging";
 		elif [ "$arg5" = "production" ]; then
-			envName="Franchise-env1";
+			envName="franchiseprod";
 		fi;;
 	pushservice )
 		if [ "$arg5" = "staging" ]; then
 			envName="pushservicestaging";
-		elif [ "$arg5" = "qa1" ]; then
-			envName="pushserviceqa1";
 		elif [ "$arg5" = "production" ]; then
 			envName="pushserviceproduction";
 		fi;;
 	ranking )
 		if [ "$arg5" = "staging" ]; then
 			envName="rankingstaging";
-		elif [ "$arg5" =  "qa1" ]; then
-			envName="rankingqa1";
 		elif [ "$arg5" = "production" ]; then
-			envName="ranking-env";
+			envName="rankingproduction";
 		fi;;
 	store-elastic-search )
 		if [ "$arg5" = "staging" ]; then
 			envName="StoreElasticSearchStaging";
-		elif [ "$arg5" = "qa1" ]; then
-			envName="storeelasticsearchqa1";
 		elif [ "$arg5" = "production" ]; then
 			envName="StoreElasticSearch-env";
 		fi;;
@@ -556,12 +546,12 @@ findDependency()
 		buildPackage mars-commons $gitpath $brch;;
 	userauth)
 		findAppPath common-parent;
-		buildPackage common-parent $gitpath $brch;;
+		buildPackage common-parent $gitpath WEB-3414;;
 	contentadmin)
 		findAppPath admin-panel-commons;
 		buildPackage admin-panel-commons $gitpath masterspringfix; 
 		findAppPath commons-parent;
-		buildPackage commons-parent $gitpath validtoken;;
+		buildPackage commons-parent $gitpath WEB-3414;;
 	erp)
 		findAppPath crud;
 		buildPackage crud $gitpath master;
@@ -569,7 +559,7 @@ findDependency()
 		buildPackage commons $gitpath master;;
 	storefront-core)
 		findAppPath commons;
-        buildPackage commons $gitpath master;;
+        	buildPackage commons $gitpath master;;
 	franchise)
 		findAppPath franchise-theme;
 		buildPackage franchise-theme $gitpath $brch;;
@@ -577,14 +567,14 @@ findDependency()
 		findAppPath commons;
         	buildPackage commons $gitpath master;
 		findAppPath commons-parent;
-        	buildPackage commons-parent $gitpath validtoken;
+        	buildPackage commons-parent $gitpath WEB-3414;
 		findAppPath storefront-jpa-entities;
 		buildPackage storefront-jpa-entities $gitpath $brch;
 		findAppPath storefront-core;
 		buildPackage storefront-core $gitpath $brch;;
 	timeline)
 		findAppPath commons-parent;
-		buildPackage commons-parent $gitpath validtoken;
+		buildPackage commons-parent $gitpath WEB-3414;
 		findAppPath magazines-service;
 		buildPackage magazines-service $gitpath masterspringfix; 
 		findAppPath articles-service;
@@ -601,58 +591,58 @@ findDependency()
 		buildPackage testseries $gitpath masterspringfix;;
 	Video-Streaming-server)
 		findAppPath commons-parent;
-		buildPackage commons-parent $gitpath validtoken;;
+		buildPackage commons-parent $gitpath WEB-3414;;
 	store-elastic-search)
 		findAppPath commons;
-        buildPackage commons $gitpath master;
+        	buildPackage commons $gitpath master;
 		findAppPath commons-parent;
-        	buildPackage commons-parent $gitpath validtoken;
+        	buildPackage commons-parent $gitpath WEB-3414;
         	findAppPath storefront-jpa-entities;
         	buildPackage storefront-jpa-entities $gitpath master;		
 		findAppPath storefront-core;
 		buildPackage storefront-core $gitpath master;
 		findAppPath commons-parent;
-		buildPackage commons-parent $gitpath validtoken;;
+		buildPackage commons-parent $gitpath WEB-3414;;
 	coupon-admin)
 		findAppPath coupon;
 		buildPackage coupon $gitpath $brch;
 		findAppPath commons-parent;
-		buildPackage commons-parent $gitpath validtoken;
+		buildPackage commons-parent $gitpath WEB-3414;
 		findAppPath admin-panel-commons;
 		buildPackage admin-panel-commons $gitpath master;;
 	newcouponadmin)
 		findAppPath commons-parent;
-		buildPackage commons-parent $gitpath validtoken;
+		buildPackage commons-parent $gitpath WEB-3414;
 		findAppPath storefront-jpa-entities;
-        buildPackage storefront-jpa-entities $gitpath master;
-        findAppPath storefront-core;
-        buildPackage storefront-core $gitpath master;
+        	buildPackage storefront-jpa-entities $gitpath master;
+        	findAppPath storefront-core;
+        	buildPackage storefront-core $gitpath master;
 		findAppPath admin-panel-commons;
 		buildPackage admin-panel-commons $gitpath masterspringfix;
 		findAppPath newcoupon;
-        buildPackage newcoupon $gitpath $brch;;
+        	buildPackage newcoupon $gitpath $brch;;
 	couponservice)
 		findAppPath commons-parent;
-		buildPackage commons-parent $gitpath validtoken;	
+		buildPackage commons-parent $gitpath WEB-3414;	
 		findAppPath coupon;
 		buildPackage coupon $gitpath $brch;;
 	newcouponservice)
 		findAppPath commons-parent;
-		buildPackage commons-parent $gitpath validtoken;
+		buildPackage commons-parent $gitpath WEB-3414;
 		findAppPath storefront-jpa-entities;
-        buildPackage storefront-jpa-entities $gitpath master;
-        findAppPath storefront-core;
-        buildPackage storefront-core $gitpath master;
+        	buildPackage storefront-jpa-entities $gitpath master;
+        	findAppPath storefront-core;
+        	buildPackage storefront-core $gitpath master;
 		findAppPath newcoupon;
 		buildPackage newcoupon $gitpath $brch;;
 	pushservice)
 		findAppPath commons-parent;
-		buildPackage commons-parent $gitpath validtoken;
+		buildPackage commons-parent $gitpath WEB-3414;
 		findAppPath admin-panel-commons;
 		buildPackage admin-panel-commons $gitpath master;;
 	ranking)
 		findAppPath commons-parent;
-		buildPackage commons-parent $gitpath validtoken;;
+		buildPackage commons-parent $gitpath WEB-3414;;
 	storefront-admin)
 		findAppPath admin-panel-commons;
 		buildPackage admin-panel-commons $gitpath master;
@@ -662,7 +652,7 @@ findDependency()
 		buildPackage storefront $gitpath $brch;;
 	testseries)
 		findAppPath commons-parent;
-		buildPackage commons-parent $gitpath validtoken;;			
+		buildPackage commons-parent $gitpath WEB-3414;;			
 	*)
 		echo "No Dependency packages needed";;
 	esac
@@ -773,15 +763,15 @@ case  $appname in
 		exit 0;;	
 	bigservice)
         	echo "Building package $appname from $branch branch ";
-        	cd $gitHome/deployment-scripts/bigservices;
+        	cd $gitHome/servercp/bigservices;
         	git stash;
         	git fetch;
-	    	git checkout dev;
+	    	git checkout master;
         	if [[ $? -ne 0 ]]; then
         		echo "Branch does not exist. Run again. Exiting";
         		exit $?
         	fi
-        	git pull origin dev;
+        	git pull origin master;
 		rm -rf $gitHome/{temp,bundle};
 		mkdir $gitHome/{temp,bundle};
 		cd $gitHome/temp;
@@ -793,7 +783,7 @@ case  $appname in
         		exit $?
         	fi
         	git pull origin $branch;
-		cp $gitHome/deployment-scripts/bigservices/pom.xml $gitHome/temp/servercp/;
+		cp $gitHome/servercp/bigservices/pom.xml $gitHome/temp/servercp/;
 		/usr/local/src/apache-maven/bin/mvn clean install;
 		if [[ $? -ne 0 ]]; then
         		echo "Build Failed. Check code again. Exiting";
@@ -810,7 +800,7 @@ case  $appname in
 		cp $gitHome/temp/servercp/GlobalConfig/target/GlobalConfig-1.0.0.war $gitHome/bundle/GlobalConfig.war;
 		cp $gitHome/temp/servercp/youtube-videos/youtube-videos-wrapper/target/youtube-videos-wrapper-1.0.0.war.original $gitHome/bundle/youtube-videos.war;
 		cp $gitHome/temp/servercp/bookmarks/target/bookmarks-1.0.0.war.original $gitHome/bundle/bookmarks.war;
-		cp -r $gitHome/deployment-scripts/bigservices/.ebextensions $gitHome/bundle/
+		cp -r $gitHome/servercp/bigservices/.ebextensions $gitHome/bundle/
 		cd $gitHome/bundle;
 		buildtime=$(timestamp);
 		findAppWarName $appname;
@@ -829,15 +819,15 @@ case  $appname in
 		exit 0;;
 	extraservice)
 		echo "Building package $appname from $brnch branch ";
-		cd $gitHome/deployment-scripts/extraservices;
+		cd $gitHome/servercp/extraservices;
 		git stash;
 		git fetch;
-		git checkout dev;
+		git checkout master;
 		if [[ $? -ne 0 ]]; then
     			echo "Branch does not exist. Run again. Exiting";
     			exit $?
 		fi
-		git pull origin $brnch;
+		git pull origin master;
 		rm -rf $gitHome/{temp,bundle};
 		mkdir $gitHome/{temp,bundle};
 		cd $gitHome/temp;
@@ -849,7 +839,7 @@ case  $appname in
            	 	exit $?
         	fi
 		git pull origin $brnch;
-		cp $gitHome/deployment-scripts/extraservices/pom.xml $gitHome/temp/servercp/;
+		cp $gitHome/servercp/extraservices/pom.xml $gitHome/temp/servercp/;
 		/usr/local/src/apache-maven/bin/mvn clean install;
         	if [[ $? -ne 0 ]]; then
         		echo "Build Failed. Check code again. Exiting";
@@ -859,10 +849,11 @@ case  $appname in
 		cp $gitHome/temp/servercp/miscellaneous/miscellaneous-service/target/miscellaneous-service-1.0.0.war $gitHome/bundle/miscellaneous.war;
 		cp $gitHome/temp/servercp/appConfig/target/appConfig-1.0.0.war.original $gitHome/bundle/appConfig.war;
 		cp $gitHome/temp/servercp/paymentstatus/target/paymentstatus-1.4.2.RELEASE.war.original $gitHome/bundle/paymentstatus.war;
+		cp -r $gitHome/servercp/extraservices/.ebextensions $gitHome/bundle/
 	 	cd $gitHome/bundle;
 		buildtime=$(timestamp);
 		findAppWarName $appname;
-		zip -r extraservice-$branch.zip appConfig.war analytics.war miscellaneous.war paymentstatus.war 
+		zip -r extraservice-$branch.zip appConfig.war analytics.war miscellaneous.war paymentstatus.war .ebextensions
 		cp $gitHome/bundle/extraservice-$branch.zip /home/ec2-user/.m2/repository/$appwarname-$branch-$buildtime.war;;		
 	*)
 		#build dependency packages 
@@ -894,6 +885,10 @@ aws elasticbeanstalk create-application-version --application-name $appnametwist
 
 findEnvName $appname $arg5;
 if [ ! -z "$envName" ];then
+	while [ `aws elasticbeanstalk describe-environment-health --environment-name $envName --attribute-names All --query 'Status' --output=text` != "Ready" ]
+                do
+                        sleep 5;
+                done
 	aws elasticbeanstalk update-environment --environment-name $envName --version-label "$appname-$branch-$msg-$buildtime";
 	if [[ $? -ne 0 ]]; then
     		echo "Environment Deploy Failed. Check again. Exiting";

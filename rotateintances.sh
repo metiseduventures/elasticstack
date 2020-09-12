@@ -1,5 +1,5 @@
 #!/bin/bash
-envlist="socialclientprod bigserviceproduction storefrontuserprod StorefrontAdminProduction testseriesprod storefrontuserprodadded"
+envlist="socialclientprod bigserviceproduction storefrontuserprod StorefrontAdminProduction testseriesprod"
 
 
 for env in $envlist

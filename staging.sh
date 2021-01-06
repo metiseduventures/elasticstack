@@ -14,9 +14,9 @@ case "$arg1" in
 esac
 
 stg1="stagingstoreuser1 StoreFrontAdminStaging1 stagingadminui";
-stg4="StoreElasticSearchStaging contentadminstaging CouponAdminStaging CouponServiceStaging Timeline-stag-env pushservicestaging analyticsstaging rankingstaging staginglivedoubts";
-stg5="userauth-staging videoserverstaging testseriesstaging bigservicestaging extraservicestaging paymentservicestaging";
-stg7="socialclientstaging newcouponadminstaging newcouponservicestaging ytsearch-staging doubtsstaging Adda247Unity-env-staging staging2adda247 staging3adda247 stagingadda247 stagingvadda247";
+stg4="StoreElasticSearchStaging contentadminstaging CouponAdminStaging CouponServiceStaging timelinestaging pushservicestaging analyticsstaging rankingstaging ";
+stg5="userauthstaging videoserverstaging testseriesstaging bigservicestaging extraservicestaging paymentservicestaging";
+stg7="socialclientstaging newcouponadminstaging newcouponservicestaging ytsearchstaging doubtsstaging staging2adda247 staging3adda247 stagingadda247 stagingvadda247";
 
 
 for i in $stg1 $stg4 $stg5 $stg7 
@@ -25,10 +25,12 @@ do
 	asg="$(aws elasticbeanstalk describe-environment-resources --environment-name $i --output=text)";
 	ASG=`echo "${asg}" | awk -F"\t" '$1=="AUTOSCALINGGROUPS" {print $2}'`;
 	echo "Triggering $action on auto scaling group $ASG";
-	groupmsg="Triggering "$action" on "$i;
-        python /home/ec2-user/devops/devops-bot.py "${groupmsg}";
+	groupmsg="Triggering "$action" on staging servers";
 	aws autoscaling update-auto-scaling-group --auto-scaling-group-name $ASG --min-size $size --max-size $size;
 done
+
+python /home/ec2-user/devops/devops-bot.py "${groupmsg}";
+curl -X POST -H 'Content-type: application/json' --data '{"text":"'"${groupmsg}"'"}' https://hooks.slack.com/services/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
 
 #stgmum1="stagingdoubts";
 

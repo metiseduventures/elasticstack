@@ -23,10 +23,11 @@ stagingclusterdb="";
 for i in $stagingdb
 do
 	echo "Initiating $dbaction on database  $i";
-	groupmsg="Initiating "$dbaction" on database "$i;	
-	python /home/ec2-user/devops/devops-bot.py "${groupmsg}"; 		
+	groupmsg="Initiating "$dbaction" on staging database ";	
 	aws rds $dbaction --db-instance-identifier $i;
 done
+	python /home/ec2-user/devops/devops-bot.py "${groupmsg}"; 		
+        curl -X POST -H 'Content-type: application/json' --data '{"text":"'"${groupmsg}"'"}' https://hooks.slack.com/services/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
 
 #for i in $stagingclusterdb
 #do

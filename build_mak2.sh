@@ -127,7 +127,7 @@ findEnvName()
     case $app in
     	userauth )
 		if [ "$arg5" = "staging" ]; then
-        		envName="userauth-staging";
+        		envName="userauthstaging";
 		elif [ "$arg5" = "qa1" ]; then
 			envName="userauthqa1";
 		elif [ "$arg5" = "production" ]; then
@@ -135,7 +135,7 @@ findEnvName()
 		fi;;
 	ytsearch )
 		if [ "$arg5" = "staging" ]; then
-			envName="ytsearch-staging";
+			envName="ytsearchstaging";
 		elif [ "$arg5" = "production" ]; then
 			envName="ytsearchprod";
 		fi ;;
@@ -253,7 +253,7 @@ findEnvName()
 		elif [ "$arg5" = "qa1" ]; then
 			envName="storefrontadminqa1";
 		elif [ "$arg5" = "production" ]; then
-			envName="StorefrontAdminProduction";
+			envName="storefrontadminprod";
 		fi;;
 	storefront-user )
 		if [ "$arg5" = "staging" ]; then
@@ -277,7 +277,7 @@ findEnvName()
 		fi;;
 	timeline )
 		if [ "$arg5" = "staging" ]; then
-			envName="Timeline-stag-env";
+			envName="timelinestaging";
 		elif [ "$arg5" = "qa1" ]; then
 			envName="timelineqa1";
 		elif [ "$arg5" = "production" ]; then

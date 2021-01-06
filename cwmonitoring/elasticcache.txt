@@ -1,8 +1,2 @@
-analytics-prod-001
-analytics-prod-002
-storefrontuserprod-001
-storefrontuserprod-002
-storefrontuserprod-003
 video-service-prod-001
-video-service-prod-002
 userauth-prod

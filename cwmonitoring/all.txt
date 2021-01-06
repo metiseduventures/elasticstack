@@ -1,3 +1,4 @@
+paymentservice
 storefrontuserprodadded
 rankingproduction
 mailingservice
@@ -28,7 +29,7 @@ ytsearchprod
 newcouponserviceprod
 newcouponadminprod
 newcouponservicestaging
-ytsearch-staging
+ytsearchstaging
 testseriesstaging
 testseriesprod
 newcouponadminstaging
@@ -47,14 +48,14 @@ StoreFrontAdminStaging2
 userauth-production
 couponserviceprod
 couponadminprod
-userauth-staging
+userauthstaging
 CouponServiceStaging
 CouponAdminStaging
 StoreFrontAdminStaging1
 StoreElasticSearchStaging
-StorefrontAdminProduction
+storefrontadminprod
 Adda247Unity-env-staging
 Adda247Unity-env-prod
-Timeline-stag-env
+timelinestaging
 StoreElasticSearch-env
 timeline-env

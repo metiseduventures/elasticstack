@@ -24,6 +24,9 @@ while [ "$flag" != false ]; do
 	if [ "$envstatus" = "Ready" ]; then
 		if [ "$envverlabel" = "$versionlabel" ]; then
 			groupmsg="Deployment on "$environment" completed. Deployed Version : "$versionlabel".";
+			if [ "$environment" = "adda247prod" ]; then
+				/home/ec2-user/devops/invalidateadda247.sh;
+			fi;
 		else
 			groupmsg="Deployment on "$environment" failed. Rolled back to Deployed Version : "$envverlabel".";
 		fi;
@@ -40,3 +43,5 @@ while [ "$flag" != false ]; do
 done
 
         python /home/ec2-user/devops/devops-bot-devops.py "${groupmsg}";
+        curl -X POST -H 'Content-type: application/json' --data '{"text":"'"${groupmsg}"'"}' https://hooks.slack.com/services/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
+

@@ -1,3 +1,4 @@
+paymentservice
 adda247prod
 storefrontuserprodadded
 rankingproduction
@@ -22,7 +23,7 @@ erpProduction
 userauth-production
 couponserviceprod
 couponadminprod
-StorefrontAdminProduction
+storefrontadminprod
 Adda247Unity-env-prod
 StoreElasticSearch-env
 timeline-env

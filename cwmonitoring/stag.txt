@@ -23,7 +23,7 @@ doubtsstaging
 socialclientstaging
 stagingmars
 newcouponservicestaging
-ytsearch-staging
+ytsearchstaging
 newcouponadminstaging
 analyticsstaging
 stagingadminuiv
@@ -34,10 +34,10 @@ StoreFrontAdminStagingv
 stagingstoreuser2
 stagingstoreuser1
 StoreFrontAdminStaging2
-userauth-staging
+userauthstaging
 CouponServiceStaging
 CouponAdminStaging
 StoreFrontAdminStaging1
 StoreElasticSearchStaging
-Timeline-stag-env
+timelinestaging
 

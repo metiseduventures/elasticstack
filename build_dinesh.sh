@@ -588,7 +588,7 @@ findDependency()
 		findAppPath commons;
         	buildPackage commons $gitpath master;
 		findAppPath commons-parent;
-        	buildPackage commons-parent $gitpath master;
+        	buildPackage commons-parent $gitpath release-WEB-3380;
 		findAppPath storefront-jpa-entities;
 		buildPackage storefront-jpa-entities $gitpath $brch;
 		findAppPath storefront-core;
@@ -697,14 +697,7 @@ noteit()
 	fi
 	mysql -u$dbuser -p$dbpass -h$dbhost $dbname -e "INSERT INTO $dbtable (\`time\`, \`appname\`, \`environment\`, \`branch\`, \`remark\`, \`versionlabel\`,\`user\`, \`isprod\`, \`status\` ) VALUES (now(), '$appname', '$envName', '$branch','$msg','$appname-$branch-$msg-$buildtime','$user','$prod','$sts')";
 	groupmsg=$appname": Deployment of "$branch" branch started on "$envName".";
-	# send message to chat bot
 	python /home/ec2-user/devops/${bot} "${groupmsg}";
-	# send message to slackbot
-	#devops channel 
-	#curl -X POST -H 'Content-type: application/json' --data '{"text":"'"${groupmsg}"'"}' https://hooks.slack.com/services/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
-	# tech team channel
-	curl -X POST -H 'Content-type: application/json' --data '{"text":"'"${groupmsg}"'"}' https://hooks.slack.com/services/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 
-
 }
 
 # verify application name is correct or not 
@@ -775,7 +768,7 @@ case  $appname in
   	    	fi
 		git pull origin $branch;
 		buildtime=$(timestamp);
-		#	npm  install;
+		#npm install;
 		if [ "$env" = "alpha" ]; then
 			npm run production;
 		else

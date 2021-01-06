@@ -16,7 +16,7 @@ pushserviceproduction
 rankingproduction
 socialclientprod
 StoreElasticSearch-env
-StorefrontAdminProduction
+storefrontadminprod
 storefrontuserprod
 storefrontuserprodadded
 testseriesprod

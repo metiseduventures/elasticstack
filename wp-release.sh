@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 
-#/usr/local/bin/aws autoscaling start-instance-refresh --profile=prod --auto-scaling-group-name wpsites-asg --preferences '{"InstanceWarmup": 400, "MinHealthyPercentage": 75}'
+/usr/local/bin/aws autoscaling start-instance-refresh --profile=prod --auto-scaling-group-name wpsites-asg --preferences '{"InstanceWarmup": 400, "MinHealthyPercentage": 75}'
 groupmsg="Starting Deployment on Production Wordpress Blogs";
 curl -X POST -H 'Content-type: application/json' --data '{"text":"'"${groupmsg}"'"}' https://hooks.slack.com/services/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
 groupmsg="Deployment status is unknown";

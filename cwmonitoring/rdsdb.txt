@@ -11,3 +11,5 @@ storefront-prod-db
 timelinedb-prod
 userdb-prod
 video-streaming-db-prod
+storefront-prod-slave1
+userdb-slave

@@ -158,6 +158,8 @@ findEnvName()
 	contentadmin )
 		if [ "$arg5" = "staging" ]; then
 			envName="contentadminstaging";
+		elif [ "$arg5" = "alpha" ]; then
+			envName="contentadminmigrate";
 		elif [ "$arg5" = "production" ]; then
 			envName="contentadminproduction";
 		fi;;
@@ -330,7 +332,8 @@ buildPackage()
     	echo "Branch does not exist. Run again. Exiting";
     	exit $?
 	fi
-	git pull origin $brnch
+	git pull origin $brnch;
+	git pull;
 	if [ "$customBuild" == true ];then
 		/usr/local/src/apache-maven/bin/mvn clean install  -Denv.name=$cusenv
 	else 

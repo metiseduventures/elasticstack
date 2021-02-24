@@ -176,6 +176,8 @@ findEnvName()
 	contentadmin )
 		if [ "$arg5" = "staging" ]; then
 			envName="contentadminstaging";
+		elif [ "$arg5" = "alpha" ]; then
+			envName="contentadminmigrate";	
 		elif [ "$arg5" = "production" ]; then
 			envName="contentadminproduction";
 		fi;;

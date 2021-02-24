@@ -1,16 +1,17 @@
 #!/usr/bin/env bash
 
+asg="$1";
 
-/usr/local/bin/aws autoscaling start-instance-refresh --profile=prod --auto-scaling-group-name wpsites-asg --preferences '{"InstanceWarmup": 400, "MinHealthyPercentage": 75}'
+/usr/local/bin/aws autoscaling start-instance-refresh --profile=prod --auto-scaling-group-name ${asg} --preferences '{"InstanceWarmup": 400,"MinHealthyPercentage": 75}'
 groupmsg="Starting Deployment on Production Wordpress Blogs";
 curl -X POST -H 'Content-type: application/json' --data '{"text":"'"${groupmsg}"'"}' https://hooks.slack.com/services/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
 groupmsg="Deployment status is unknown";
 
 while true
 do
-	response="$(/usr/local/bin/aws autoscaling describe-instance-refreshes --profile=prod --auto-scaling-group-name wpsites-asg --output=text --query 'InstanceRefreshes[0].Status' --output=text)";
+	response="$(/usr/local/bin/aws autoscaling describe-instance-refreshes --profile=prod --auto-scaling-group-name ${asg} --output=text --query 'InstanceRefreshes[0].Status' --output=text)";
 	if [ "$response" = "InProgress" ]; then
-		/usr/local/bin/aws autoscaling describe-instance-refreshes --profile=prod --auto-scaling-group-name wpsites-asg --query 'InstanceRefreshes[0].[Status,PercentageComplete,StatusReason]' --output=text;
+		/usr/local/bin/aws autoscaling describe-instance-refreshes --profile=prod --auto-scaling-group-name ${asg} --query 'InstanceRefreshes[0].[Status,PercentageComplete,StatusReason]' --output=text;
 		sleep 30;
 	elif [ "$response" = "Pending" ]; then
 		echo "Request is in Pending State";

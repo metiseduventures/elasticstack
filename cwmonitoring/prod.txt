@@ -24,6 +24,5 @@ userauth-production
 couponserviceprod
 couponadminprod
 storefrontadminprod
-Adda247Unity-env-prod
 StoreElasticSearch-env
 timeline-env

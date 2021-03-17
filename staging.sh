@@ -13,7 +13,7 @@ case "$arg1" in
 		exit 1;
 esac
 
-stg1="stagingstoreuser1 StoreFrontAdminStaging1 stagingadminui";
+stg1="stagingstoreuser1 StoreFrontAdminStaging1 stagingadminui staginggoldweb";
 stg4="StoreElasticSearchStaging contentadminstaging CouponAdminStaging CouponServiceStaging timelinestaging pushservicestaging analyticsstaging rankingstaging ";
 stg5="userauthstaging videoserverstaging testseriesstaging bigservicestaging extraservicestaging paymentservicestaging";
 stg7="socialclientstaging newcouponadminstaging newcouponservicestaging ytsearchstaging doubtsstaging staging2adda247 staging3adda247 stagingadda247 stagingvadda247";
@@ -30,7 +30,7 @@ do
 done
 
 python /home/ec2-user/devops/devops-bot.py "${groupmsg}";
-curl -X POST -H 'Content-type: application/json' --data '{"text":"'"${groupmsg}"'"}' https://hooks.slack.com/services/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
+curl -X POST -H 'Content-type: application/json' --data '{"text":"'"${groupmsg}"'"}' https://hooks.slack.com/services/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
 
 #stgmum1="stagingdoubts";
 

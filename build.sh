@@ -54,10 +54,10 @@ verifyAppName()
 {
 	local app=$1;
 	case "$app" in
-		adda247 | livedoubts | paymentservice | erp | userauth | bigservice | analytics | appInstall | contentadmin | franchise | mailingservice | pushservice | ranking | testseries | timeline | Video-Streaming-server | store-elastic-search | coupon-admin | couponservice | extraservice | socialclient | newcouponadmin | ytsearch | newcouponservice | mars | Video-Streaming-server | doubts ) 
+		adda247 | goldweb | livedoubts | paymentservice | erp | userauth | bigservice | analytics | appInstall | contentadmin | franchise | mailingservice | pushservice | ranking | testseries | timeline | Video-Streaming-server | store-elastic-search | coupon-admin | couponservice | extraservice | socialclient | newcouponadmin | ytsearch | newcouponservice | mars | Video-Streaming-server | doubts ) 
 		;;
 
-		admin-panel-ui | storefront-user | storefront-admin | adda247 )
+		admin-panel-ui | storefront-user | storefront-admin | adda247 | goldweb )
 		if [ -z "$arg5" ]; then
 			echo "You have not selected environment for which you are building\n usage: build.sh -a applicationName [-b branchName] environment";
 			exit 1;
@@ -116,6 +116,10 @@ findEnvName()
 			envName="ytsearchstaging";
 		elif [ "$arg5" = "production" ]; then
 			envName="ytsearchprod";
+		fi ;;
+	goldweb )
+		if [ "$arg5" = "staging" ]; then
+			envName="staginggoldweb";
 		fi ;;
 	adda247 )
 		if [ "$arg5" = "staging" ]; then
@@ -548,6 +552,8 @@ findAppPath()
 		gitpath=$gitHome"marsexammaster/commons";;
 	adda247)
 		gitpath=$gitHome"henosis";;
+	goldweb)
+		gitpath=$gitHome"goldweb";;
 	beta-store)
 		gitpath=$gitHome"web-store";;
 	doubts)
@@ -706,7 +712,7 @@ noteit()
 	#devops channel 
 	#curl -X POST -H 'Content-type: application/json' --data '{"text":"'"${groupmsg}"'"}' https://hooks.slack.com/services/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
 	# tech team channel
-	curl -X POST -H 'Content-type: application/json' --data '{"text":"'"${groupmsg}"'"}' https://hooks.slack.com/services/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 
+	curl -X POST -H 'Content-type: application/json' --data '{"text":"'"${groupmsg}"'"}' https://hooks.slack.com/services/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 
 
 }
 
@@ -764,7 +770,7 @@ case  $appname in
             	fi
             	noteit ;
 		exit 0;;
-	adda247)
+	adda247 | goldweb )
 		echo "Building package $appname from $branch branch ";
 		env=$arg5;
  		findAppPath $appname;
@@ -784,8 +790,8 @@ case  $appname in
 		else
 			npm run $env;
 		fi
-		zip -x *.git* -r adda247-unity * .[^.]*
-		mv adda247-unity.zip  /home/ec2-user/.m2/repository/$appname-$branch-$env-$buildtime.zip;
+		zip -x *.git* -r $appname * .[^.]*
+		mv $appname.zip  /home/ec2-user/.m2/repository/$appname-$branch-$env-$buildtime.zip;
         	aws s3 sync /home/ec2-user/.m2/repository s3://adda247-builds-repo --exclude "*" --include "*.war" --include "*.zip" --profile s3user;
         	rm -f /home/ec2-user/.m2/repository/*.zip;
        		rm -f /home/ec2-user/.m2/repository/*.war;

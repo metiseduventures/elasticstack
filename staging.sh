@@ -14,7 +14,7 @@ case "$arg1" in
 esac
 
 stg1="stagingstoreuser1 StoreFrontAdminStaging1 stagingadminui staginggoldweb";
-stg4="StoreElasticSearchStaging contentadminstaging CouponAdminStaging CouponServiceStaging timelinestaging pushservicestaging analyticsstaging rankingstaging ";
+stg4="StoreElasticSearchStaging contentadminstaging CouponAdminStaging CouponServiceStaging timelinestaging pushservicestaging staginganalytics rankingstaging ";
 stg5="userauthstaging videoserverstaging testseriesstaging bigservicestaging extraservicestaging paymentservicestaging";
 stg7="socialclientstaging newcouponadminstaging newcouponservicestaging ytsearchstaging doubtsstaging staging2adda247 staging3adda247 stagingadda247 stagingvadda247";
 

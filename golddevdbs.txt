@@ -1,0 +1,12 @@
+adda247accountsdb          
+adda247appPerformancedb    
+adda247appUsercontentdb    
+adda247appUserpreferencedb 
+adda247contentsdb          
+adda247examsdb             
+adda247livedoubtdb         
+adda247ordersdb            
+adda247packagesdb          
+adda247tagsdb              
+adda247testsdb             
+adda247usersdb

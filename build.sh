@@ -120,6 +120,8 @@ findEnvName()
 	goldweb )
 		if [ "$arg5" = "staging" ]; then
 			envName="staginggoldweb";
+	        elif [ "$arg5" = "production" ]; then
+                        envName="goldweb";
 		fi ;;
 	adda247 )
 		if [ "$arg5" = "staging" ]; then
@@ -149,7 +151,7 @@ findEnvName()
 		fi;;
 	analytics )
 		if [ "$arg5" = "staging" ]; then
-			envName="analyticsstaging";
+			envName="staginganalytics";
 		elif [ "$arg5" = "production" ]; then
 			envName="analyticsprod";
 		fi;;
@@ -784,7 +786,7 @@ case  $appname in
   	    	fi
 		git pull origin $branch;
 		buildtime=$(timestamp);
-		#	npm  install;
+			npm  install;
 		if [ "$env" = "alpha" ]; then
 			npm run production;
 		else
@@ -940,6 +942,10 @@ if [ ! -z "$envName" ];then
 		do
 			sleep 5;
 		done
+	if [ "$appname" = "storefront-user" ] and [ "$arg5" = "production" ]; then
+		#aws elasticbeanstalk update-environment --environment-name storefrontuserprod2 --version-label "$appname-$branch-$msg-$buildtime";
+		aws elasticbeanstalk update-environment --environment-name storefrontuserprodadded --version-label "$appname-$branch-$msg-$buildtime";
+	fi 
 	aws elasticbeanstalk update-environment --environment-name $envName --version-label "$appname-$branch-$msg-$buildtime";
 	if [[ $? -ne 0 ]]; then
     		echo "Environment Deploy Failed. Check again. Exiting";

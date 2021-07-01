@@ -1,0 +1,41 @@
+## rotate instances of erp environment
+#15 12 * * * /home/ec2-user/scripts/erpRotation.sh >> /var/log/devopscrons-erp.log 
+
+## check webinar token on production 
+*/15 * * * *  /usr/bin/curl --silent --request GET --url https://store.adda247.com/api/v1/webinars/getOrganizers --header 'Accept: */*' --header 'Cache-Control: no-cache' --header 'Connection: keep-alive' --header 'Host: store.adda247.com' --header 'Postman-Token: 41f49f69-6ae5-4075-aaad-3193e0f8efab,42de1d2d-f5f0-4594-98b2-bb9a1a65e083' --header 'User-Agent: PostmanRuntime/7.15.0' --header 'X-Auth-Token: fpoa43edty5' --header 'accept-encoding: gzip, deflate' --header 'cache-control: no-cache' >> /var/log/devopscrons-webinartoken-prod.log
+
+## check webinar token on staging 
+*/15 * * * *  /usr/bin/curl --silent --request GET --url https://stagingstore.adda247.com/api/v1/webinars/getOrganizers --header 'Accept: */*' --header 'Cache-Control: no-cache' --header 'Connection: keep-alive' --header 'Host: store.adda247.com' --header 'Postman-Token: 41f49f69-6ae5-4075-aaad-3193e0f8efab,42de1d2d-f5f0-4594-98b2-bb9a1a65e083' --header 'User-Agent: PostmanRuntime/7.15.0' --header 'X-Auth-Token: fpoa43edty5' --header 'accept-encoding: gzip, deflate' --header 'cache-control: no-cache' >> /var/log/devopscrons-webnartoken-staging.log
+
+
+## mapping id correction jugaad
+*/5 * * * * /home/ec2-user/scripts/setMappingId.sh 
+
+## remove read count 
+#*/3 * * * * /home/ec2-user/scripts/removeReadCount.sh >> /var/log/devopscrons-discuss.log
+
+
+## stop/start database instances
+#05 23 * * 1-5 /home/ec2-user/devops/stagingdb.sh scaledown >> /var/log/devopscrons-stop-stagingdb.log 
+45 8 * * 1-5 /home/ec2-user/devops/stagingdb.sh scaleup >> /var/log/devopscrons-start-stagingdb.log 
+00 20 * * 1-5 /home/ec2-user/devops/qa1db.sh scaledown >> /var/log/devopscrons-stop-qa1db.log 
+##30 9 * * 1-5 /home/ec2-user/devops/qa1db.sh scaleup >> /var/log/devopscrons-start-qa1db.log
+
+
+## start/stop staging instances
+#00 23 * * 1-5 /home/ec2-user/devops/staging.sh scaledown >> /var/log/devopscrons-stop-stagingenv.log 
+00 9 * * 1-5 /home/ec2-user/devops/staging.sh scaleup >> /var/log/devopscrons-start-stagingenv.log
+#00 23 * * 1-5 /home/ec2-user/devops/staging-extra.sh scaledown >> /var/log/devopscrons-stop-stagingenv.log 
+00 9 * * 1-5 /home/ec2-user/devops/staging-extra.sh scaleup >> /var/log/devopscrons-start-stagingenv.log
+00 20 * * 1-5 /home/ec2-user/devops/qa1env.sh scaledown >> /var/log/devopscrons-stop-qa1env.log 
+##00 10 * * 1-5 /home/ec2-user/devops/qa1env.sh scaleup >> /var/log/devopscrons-start-qa1env.log
+
+
+
+## cleanup old mvn builds from repository 
+#50 23 * * *  find /home/ec2-user/.m2/repository -type f -name '*.war' -mtime +2 -exec rm {} \;
+
+
+## cron job for bankersadda.com
+#* * * * * curl -X POST -sD - -o /dev/null https://www.bankersadda.com/wp-cron.php  >> /var/log/devopscrons-bankdersadda.log
+#* * * * * curl -X POST -sD - -o /dev/null http://stagingbankersadda-974578075.ap-south-1.elb.amazonaws.com/wp-cron.php  >> /var/log/devopscrons-bankersadda-staging.log

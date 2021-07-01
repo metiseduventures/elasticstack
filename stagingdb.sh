@@ -10,7 +10,7 @@ case "$arg1" in
 		dbclusteraction="stop-db-cluster";
 		dbaction="stop-db-instance";;
 	*)
-		echo  "usage: stagingdb.sh (scaleup/scaledown)"
+		echo  "usage: stagingdb.sh (scaleup/scaledown)";
 		exit 1;
 esac
 
@@ -24,7 +24,7 @@ stagingclusterdb="wordpress-staging-db-cluster";
 for i in $stagingdb
 do
 	echo "Initiating $dbaction on database  $i";
-	groupmsg="Initiating "$dbaction" on staging database ";	
+	groupmsg="Initiating "$dbaction" on staging database ";
 	aws rds $dbaction --db-instance-identifier $i;
 done
 	python /home/ec2-user/devops/devops-bot.py "${groupmsg}"; 		

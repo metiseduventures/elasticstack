@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 arg1="$1";
 arg2="$2";
@@ -966,12 +966,13 @@ if [ ! -z "$envName" ];then
     		echo "Environment Deploy Failed. Check again. Exiting";
     		exit $?
 	fi
+	noteit ;
 else
 	echo "No Environment mapped to deploy automatic ";
 	exit 1;
 fi
 
-
+exit 0;
 
 
 

@@ -17,6 +17,16 @@ stg1="stagingstoreuser1 StoreFrontAdminStaging1 stagingadminui staginggoldweb";
 stg4="StoreElasticSearchStaging contentadminstaging CouponAdminStaging CouponServiceStaging timelinestaging pushservicestaging staginganalytics rankingstaging ";
 stg5="userauthstaging videoserverstaging testseriesstaging bigservicestaging extraservicestaging paymentservicestaging";
 stg7="socialclientstaging newcouponadminstaging newcouponservicestaging ytsearchstaging doubtsstaging staging2adda247 staging3adda247 stagingadda247 stagingvadda247";
+stagingdb="storefront-staging-db bigservicedb-stag1 extradb-staging storeresultdb-stage userdb-stag video-streaming-db-staging";
+
+for db in $stagingdb
+do
+	status="$(aws rds describe-db-instances --db-instance-identifier $stagingdb --query 'DBInstances[*].DBInstanceStatus' --output text)";
+	if [ "$status" != "available" ]; then
+		echo "$stagingdb :Database not available";
+		exit 1;
+	fi
+done
 
 
 for i in $stg1 $stg4 $stg5 $stg7 

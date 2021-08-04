@@ -16,8 +16,7 @@ esac
 
 
 
-#stagingdb="storefront-staging-db bigservicedb-stag1 extradb-staging storeresultdb-stage userdb-stag video-streaming-db-staging";
-stagingdb="storefront-staging-db bigservicedb-stag1 storeresultdb-stage userdb-stag video-streaming-db-staging";
+stagingdb="storefront-staging-db bigservicedb-stag1 extradb-staging storeresultdb-stage userdb-stag video-streaming-db-staging";
 ##adda-wordpress-prod-db";
 stagingclusterdb="wordpress-staging-db-cluster";
 

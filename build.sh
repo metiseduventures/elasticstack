@@ -1,10 +1,12 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 arg1="$1";
 arg2="$2";
 arg3="$3";
 arg4="$4";
 arg5="$5";
+
+echo $arg4;
 
 	case "$arg1" in
 		-a | --appname )        
@@ -54,7 +56,7 @@ verifyAppName()
 {
 	local app=$1;
 	case "$app" in
-		adda247 | goldweb | livedoubts | paymentservice | erp | userauth | bigservice | analytics | appInstall | contentadmin | franchise | mailingservice | pushservice | ranking | testseries | timeline | Video-Streaming-server | store-elastic-search | coupon-admin | couponservice | extraservice | socialclient | newcouponadmin | ytsearch | newcouponservice | mars | Video-Streaming-server | doubts ) 
+		adda247 | goldweb | livedoubts | ebooks | paymentservice | erp | liveclass | userauth | bigservice | analytics | appInstall | contentadmin | franchise | mailingservice | pushservice | ranking | testseries | timeline | Video-Streaming-server | store-elastic-search | coupon-admin | couponservice | extraservice | socialclient | newcouponadmin | ytsearch | newcouponservice | mars | Video-Streaming-server | doubts ) 
 		;;
 
 		admin-panel-ui | storefront-user | storefront-admin | adda247 | goldweb )
@@ -107,10 +109,16 @@ findEnvName()
 		elif [ "$arg5" = "production" ]; then
 			envName="paymentservice";
 		fi;;
-    	livedoubts )
+    	ebooks )
 		if [ "$arg5" = "staging" ]; then
-        		envName="staginglivedoubts";
+        		envName="ebookstaging";
 		fi;;
+        liveclass )
+                if [ "$arg5" = "staging" ]; then
+                        envName="liveclassstaging";
+		elif [ "$arg5" = "production" ]; then
+                        envName="liveclassproduction";
+                fi;;
 	ytsearch )
 		if [ "$arg5" = "staging" ]; then
 			envName="ytsearchstaging";
@@ -361,9 +369,12 @@ findAppWarName()
 	paymentservice)
 		appwarname="payment";
 		appwarkey="in/careerpower/$appwarname/1.0.0/$appwarname-1.0.0.war";;
-	livedoubts)
-		appwarname="livedoubts";
-		appwarkey="com/adda247/$appwarname/0.0.1/$appwarname-0.0.1.war";;
+	ebooks)
+		appwarname="ebooks-service";
+		appwarkey="in/careerpower/$appwarname/1.0.0/$appwarname-1.0.0.war";;
+	liveclass)
+                appwarname="liveclass";
+                appwarkey="in/careerpower/$appwarname/0.0.1/$appwarname-0.0.1.war";;
 	admin-panel-ui)
 		appwarname="adminpaneluimaven";
 		appwarkey="org/springframework/boot/$appwarname/0.0.1/$appwarname-0.0.1.war";;
@@ -454,8 +465,10 @@ findAppPath()
 		gitpath=$gitHome"servercp/userauth";;
 	paymentservice)
 		gitpath=$gitHome"paymentservice";;
-	livedoubts)
-		gitpath=$gitHome"livedoubts";;
+	ebooks)
+		gitpath=$gitHome"servercp/ebooks";;
+	liveclass)
+                gitpath=$gitHome"servercp/liveclass";;
    	ytsearch)
         	gitpath=$gitHome"ytsearch";;
 	bigservice)
@@ -930,6 +943,8 @@ if [ "$appname" = "newcouponadmin" ]; then
 	appnametwist="coupon-admin";
 elif [ "$appname" = "newcouponservice" ]; then
 	appnametwist="couponservice";
+elif [ "$appname" = "ebooks" ]; then
+	appnametwist="ebook";
 else
 	appnametwist=$appname;
 fi
@@ -955,4 +970,8 @@ else
 	echo "No Environment mapped to deploy automatic ";
 	exit 1;
 fi
-noteit;
+
+
+
+
+

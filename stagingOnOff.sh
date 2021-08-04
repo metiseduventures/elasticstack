@@ -24,6 +24,25 @@ stg4="stagingstoreuserv StoreFrontAdminStagingv stagingadminuiv";
 hostlist="#";
 hosttype="host";
 
+
+checkdbstatus()
+{
+
+	stagingdbdown=0;
+	for db in $stgdb1
+	do
+		status="$(aws rds describe-db-instances --db-instance-identifier $db --query 'DBInstances[*].DBInstanceStatus' --output text)";
+		if [ "$status" != "available" ]; then
+			echo "$db :Database not available";
+			stagingdbdown=1;
+			exit 1;
+		else
+			echo "$db :Database is available";
+		fi
+	done
+
+}
+
 case "$arg2" in
 	basestaging)
 		hostlist=${stg1};;
@@ -42,6 +61,9 @@ case "$arg2" in
 esac
 
 if [ "$hosttype" = "host" ]; then
+	if [ "$action" = "scaleup" ]; then
+	checkdbstatus;
+	fi
 	for i in $hostlist 
 	  do
 		echo "Fetching autoscaling groups of environments: $i";

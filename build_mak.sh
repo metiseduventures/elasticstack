@@ -53,7 +53,7 @@ verifyAppName()
 {
 	local app=$1;
 	case "$app" in
-		erp | userauth | bigservice | analytics | appInstall | contentadmin | franchise | mailingservice | pushservice | ranking | testseries | timeline | Video-Streaming-server | store-elastic-search | coupon-admin | couponservice | extraservice | socialclient | newcouponadmin | ytsearch | newcouponservice | mars )
+		erp | userauth | ebooks |  bigservice | analytics | appInstall | contentadmin | franchise | mailingservice | pushservice | ranking | testseries | timeline | Video-Streaming-server | store-elastic-search | coupon-admin | couponservice | extraservice | socialclient | newcouponadmin | ytsearch | newcouponservice | mars )
 		;;
 
 		admin-panel-ui | storefront-user | storefront-admin )
@@ -133,6 +133,10 @@ findEnvName()
 		elif [ "$arg5" = "production" ]; then
 			envName="userauth-production";
 		fi;;
+        ebooks )
+                if [ "$arg5" = "staging" ]; then
+                        envName="ebookstaging";
+                fi;;
 	ytsearch )
 		if [ "$arg5" = "staging" ]; then
 			envName="ytsearchstaging";
@@ -348,6 +352,9 @@ findAppWarName()
 	admin-panel-ui)
 		appwarname="adminpaneluimaven";
 		appwarkey="org/springframework/boot/$appwarname/0.0.1/$appwarname-0.0.1.war";;
+        ebooks)
+                appwarname="ebooks-service";
+                appwarkey="in/careerpower/$appwarname/1.0.0/$appwarname-1.0.0.war";;
 	analytics)
 		appwarname=$appname;
 		appwarkey="in/careerpower/$appwarname/1.5.7.RELEASE/$appwarname-1.5.7.RELEASE.war";;
@@ -430,8 +437,10 @@ findAppPath()
 	case $app in
 	userauth)
 		gitpath=$gitHome"servercp/userauth";;
-    ytsearch)
-        gitpath=$gitHome"ytsearch";;
+        ytsearch)
+                gitpath=$gitHome"ytsearch";;
+        ebooks)
+                gitpath=$gitHome"servercp/ebooks";;
 	bigservice)
 		gitpath=$gitHome"deployment-scripts/bigservices";;
 	extraservice)
@@ -551,9 +560,12 @@ findDependency()
 		buildPackage common-parent $gitpath $brch;;
 	contentadmin)
 		findAppPath admin-panel-commons;
-		buildPackage admin-panel-commons $gitpath masterspringfix; 
+		buildPackage admin-panel-commons $gitpath masterspringfix;	
 		findAppPath commons-parent;
 		buildPackage commons-parent $gitpath master;;
+	#ebooks)
+	#	findAppPath commons;
+         #       buildPackage commons $gitpath $brch;;
 	erp)
 		findAppPath crud;
 		buildPackage crud $gitpath master;
@@ -878,6 +890,8 @@ if [ "$appname" = "newcouponadmin" ]; then
 	appnametwist="coupon-admin";
 elif [ "$appname" = "newcouponservice" ]; then
 	appnametwist="couponservice";
+elif [ "$appname" = "ebooks" ]; then
+        appnametwist="ebook";
 else
 	appnametwist=$appname;
 fi

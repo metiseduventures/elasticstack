@@ -42,6 +42,7 @@ dbname="devops";
 dbtable="deployments";
 timemark='date +"%F %T"';
 cusenv=$arg5;
+oldver="NULL";
 
 if [ ! -z "$arg5" ];then
 	msg="$msg-$arg5";
@@ -66,7 +67,7 @@ verifyAppName()
 				customBuild=true;
 				cusenv=staging1;
 				;;
-				staging2 | stagingv | alpha )
+				staging2 | stagingv | alpha | preproduction)
 				customBuild=true;
 				;;
 				production)
@@ -136,23 +137,25 @@ findEnvName()
         ebooks )
                 if [ "$arg5" = "staging" ]; then
                         envName="ebookstaging";
+		elif [ "$arg5" = "production" ]; then
+                        envName="ebookproduction";
                 fi;;
 	ytsearch )
 		if [ "$arg5" = "staging" ]; then
 			envName="ytsearchstaging";
 		elif [ "$arg5" = "production" ]; then
 			envName="ytsearchprod";
-		fi ;;
+		fi;;
 	adda247 )
 		if [ "$arg5" = "staging" ]; then
 			envName="adda247-stagingadda247";
-		fi ;;
+		fi;;
 	adda247-unity )
 		if [ "$arg5" = "staging" ]; then
 			envName="Adda247Unity-env-staging";
 		elif [ "$arg5" = "production" ]; then
 			envName="Adda247Unity-env-prod";
-		fi ;;
+		fi;;
 	admin-panel-ui )
 		if [ "$arg5" = "staging" ] ;then
 			envName="stagingadminui";
@@ -280,6 +283,8 @@ findEnvName()
 			envName="testseriesqa1";
 		elif [ "$arg5" = "production" ]; then
 			envName="testseriesprod";
+		elif [ "$arg5" = "preproduction" ]; then
+                        envName="testseriespreprod";
 		fi;;
 	timeline )
 		if [ "$arg5" = "staging" ]; then
@@ -683,7 +688,7 @@ noteit()
 		bot="devops-bot-devops.py";
 	fi
 	mysql -u$dbuser -p$dbpass -h$dbhost $dbname -e "INSERT INTO $dbtable (\`time\`, \`appname\`, \`environment\`, \`branch\`, \`remark\`, \`versionlabel\`,\`user\`, \`isprod\`, \`status\` ) VALUES (now(), '$appname', '$envName', '$branch','$msg','$appname-$branch-$msg-$buildtime','$user','$prod','$sts')";
-	groupmsg=$appname": Deployment of "$branch" branch started on "$envName".";
+	groupmsg=$appname": Deployment of "$branch" branch started on "$envName". Previous Version : "$oldver;
 	python /home/ec2-user/devops/${bot} "${groupmsg}";
 }
 
@@ -733,6 +738,7 @@ case  $appname in
 		# create application version.
 		aws elasticbeanstalk create-application-version --application-name $appname --version-label "$appname-$branch-$msg-$buildtime" --description "automated build of $appname from $branch branch" --source-bundle S3Bucket="adda247-builds-repo",S3Key="$appname-$branch-$msg-$buildtime.zip";
 		findEnvName $appname $arg5;
+	        oldver=$(aws elasticbeanstalk describe-environments --environment-names $envName --query 'Environments[*].VersionLabel' --output=text);
         	aws elasticbeanstalk update-environment --environment-name $envName --version-label "$appname-$branch-$msg-$buildtime";
         	if [[ $? -ne 0 ]]; then
                 	echo "Environment Deploy Failed. Check again. Exiting";
@@ -768,6 +774,7 @@ case  $appname in
         	rm -f /home/ec2-user/.m2/repository/*.zip;
        		rm -f /home/ec2-user/.m2/repository/*.war;
         	aws elasticbeanstalk create-application-version --application-name adda247-$appname --version-label "$appname-$branch-$env-$buildtime" --description "automated build of $appname from $branch branch using $env configuration" --source-bundle S3Bucket="adda247-builds-repo",S3Key="$appname-$branch-$env-$buildtime.zip";
+	        oldver=$(aws elasticbeanstalk describe-environments --environment-names $envName --query 'Environments[*].VersionLabel' --output=text);
         	aws elasticbeanstalk update-environment --environment-name Adda247Unity-env-staging --version-label "$appname-$branch-$env-$buildtime";
 		if [[ $? -ne 0 ]]; then
         		echo "Environment Deploy Failed. Check again. Exiting";
@@ -824,6 +831,7 @@ case  $appname in
 		find /home/ec2-user/.m2/repository/ -type f -name "*.war" -exec rm -f {} \;
 		aws elasticbeanstalk create-application-version --application-name $appname --version-label "$appname-$branch-$msg-$buildtime" --description "automated build of $appname from $branch branch" --source-bundle S3Bucket="adda247-builds-repo",S3Key="$appwarname-$branch-$buildtime.zip";
         	findEnvName $appname $arg5;
+	        oldver=$(aws elasticbeanstalk describe-environments --environment-names $envName --query 'Environments[*].VersionLabel' --output=text);
         	aws elasticbeanstalk update-environment --environment-name $envName --version-label "$appname-$branch-$msg-$buildtime";
         	if [[ $? -ne 0 ]]; then
             		echo "Environment Deploy Failed. Check again. Exiting";
@@ -905,6 +913,7 @@ if [ ! -z "$envName" ];then
                 do
                         sleep 5;
                 done
+	oldver=$(aws elasticbeanstalk describe-environments --environment-names $envName --query 'Environments[*].VersionLabel' --output=text);
 	aws elasticbeanstalk update-environment --environment-name $envName --version-label "$appname-$branch-$msg-$buildtime";
 	if [[ $? -ne 0 ]]; then
     		echo "Environment Deploy Failed. Check again. Exiting";

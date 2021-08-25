@@ -26,3 +26,5 @@ couponadminprod
 storefrontadminprod
 StoreElasticSearch-env
 timeline-env
+liveclassproduction
+ebookproduction

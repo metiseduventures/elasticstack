@@ -1,0 +1,32 @@
+setup.kibana:
+  host: "http://3.235.20.95:80"
+  username: "elastic"
+  password: "adda247"
+output.logstash:
+  hosts: ["172.31.12.45:5044", "172.31.15.129:5044", "172.31.6.135:5044"]
+  loadbalance: true
+setup.dashboards.enabled: true
+setup.template.name: "filebeat"
+setup.template.pattern: "filebeat-*"
+setup.dashboards.index: "filebeat-*"
+setup.template.overwrite: true
+setup.template.fields: "/etc/filebeat/fields.yml"
+filebeat.inputs:
+- type: log
+  enabled: true
+  paths:
+    - /var/log/tomcat8/catalina.out
+
+  force_close_files: true
+  fields:
+    type: tomcat
+filebeat.config.modules:
+      # Glob pattern for configuration loading
+  path: ${path.config}/modules.d/*.yml
+  reload.enabled: true
+processors:
+- add_fields:
+    target: 'adda247'
+    fields:
+      app_name: appname
+      env: envname

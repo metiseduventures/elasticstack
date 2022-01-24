@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+
+
+
+
+
+
+
+arg1=$1;
+word="doubt";
+
+echo "arg :"$arg1;
+echo "word:"$word;
+
+if [[ $arg1 =~ "doubt" || $arg1 =~ "social" ]]; then
+	if [[ $arg1 =~ "staging" ]];then
+		echo "string found staging";
+	else
+		echo "string found prod";
+	fi
+else
+	echo "string not found";
+fi
+
+echo "end";
+
+
+
+

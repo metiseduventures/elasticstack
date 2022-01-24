@@ -1,0 +1,8 @@
+[
+  { 
+    "Namespace": "aws:elb:policies",
+    "OptionName": "ConnectionDrainingTimeout",
+    "Value": "120"
+  }
+]
+

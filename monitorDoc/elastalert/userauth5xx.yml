@@ -1,0 +1,60 @@
+---
+
+    name: userauth error5xx
+    type: any
+    index: apm-*
+    num_events: 1
+    timeframe:
+        hours: 9
+    realert:
+        minutes: 15
+    filter:
+    #- query_string:
+           # query: "http.response.status_code: 500"
+    - range:
+        http.response.status_code:
+          from: 500
+          to: 504
+    - query:
+        query_string: {query: 'service.name: userauth'}
+#    - query:
+ #       query_string: {query: 'http.response.status_code: 400'}
+  #  - query:
+   #     query_string: {query: 'http.response.status_code: 404'}
+   # - query:
+    #    query_string: {query: 'http.response.status_code: 429'}
+    #aggregation:
+     # minutes: 2   
+    #aggregation_key: 'url.full'
+    #summary_table_fields:
+    #- "@timestamp"
+    #- trace.id
+    #- cmd
+    aggregation:
+      schedule: '0 8 * * * *'
+
+    query_key: "url.full"
+    alert:
+    - "email"
+    alert_subject: Getting {1}  server error on {0}
+    alert_subject_args:
+    - service.name
+    - http.response.status_code
+    alert_text: "ElastAlert has detected server error {4}  at {3} for traceid: {0}. URL full path is {1} in {2}"
+    alert_text_type: alert_text_only
+    alert_text_args:
+    - trace.id
+    - url.full
+    - service.name
+    - "@timestamp"
+    - http.response.status_code
+    email:
+    - "alertuserauth@adda247.com"
+ #   - "devops@adda247.com"
+
+    smtp_host: "email-smtp.us-east-1.amazonaws.com"
+    smtp_port: 25
+    from_addr: "devops@adda247.com"
+    smtp_tls: true
+    smtp_auth_file: '/opt/elastalert/smtp_auth_file2.yaml'
+

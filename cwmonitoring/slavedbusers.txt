@@ -1,0 +1,8 @@
+bigservicedb-prod.cgit7qfnncrf.us-east-1.rds.amazonaws.com:bigservicesdb:metis129
+coupon-prod-db.cgit7qfnncrf.us-east-1.rds.amazonaws.com:coupondb:metis921
+video-streaming-db-prod.cgit7qfnncrf.us-east-1.rds.amazonaws.com:videostreaming:streaming123
+userdb-prod.cgit7qfnncrf.us-east-1.rds.amazonaws.com:userdb:metis129
+storefront-prod-db.cgit7qfnncrf.us-east-1.rds.amazonaws.com:storefrontdb:Waddi98#
+storefront-analytics-prod-snapshot-db.cgit7qfnncrf.us-east-1.rds.amazonaws.com:rankanalyticsdb:metis921
+erpdb-prod.cgit7qfnncrf.us-east-1.rds.amazonaws.com:erpdb:Metis1357
+franchise-prod.cgit7qfnncrf.us-east-1.rds.amazonaws.com:franchise:Metis$5544

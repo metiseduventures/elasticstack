@@ -1,0 +1,34 @@
+---
+- name: Add the user for Solr Exporter
+  user:
+    name: prom
+    shell: /sbin/nologin
+
+- name: Unzip should be present
+  yum:
+    name: unzip
+    state: present
+
+- name: Download and unarchive the solr exporter
+  unarchive:
+    src: "https://github.com/mosuka/solr-exporter/releases/download/{{ solr_exporter_version }}/solr-exporter-{{ solr_exporter_version }}-bin.zip"
+    dest: "/opt/"
+    remote_src: yes
+    mode: 0755
+
+- name: Create Service for Solr Exporter
+  template:
+    src: "solr-exporter.j2"
+    dest: "/etc/systemd/system/solr-exporter.service"
+    mode: 0755
+
+- name: Daemon Reload for Solr Exporter
+  systemd:
+    name: solr-exporter
+    daemon_reload: yes
+
+- name: Start and Enable the service for Solr Exporter
+  systemd:
+    name: solr-exporter
+    state: started
+    enabled: yes

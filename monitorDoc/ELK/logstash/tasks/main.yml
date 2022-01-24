@@ -1,0 +1,7 @@
+---
+# tasks file for logstash
+
+- name: Include OS Specific setup tasks
+  include_tasks: logstash-{{ ansible_os_family }}.yml
+
+- include_tasks: config.yml

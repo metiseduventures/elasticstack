@@ -1,0 +1,11 @@
+---
+# vars file for kibana
+nginx_port: "80"
+kibana_version: "7"
+kibana_version_rpm: "7.4.0"
+elk_kibana_username: "admin"
+elk_kibana_password: "admin@kibana"
+kibana_server_ip: "0.0.0.0"
+kibana_port: "5601"
+elasticsearch_port: "9200"
+# Kibana_server_centos_ip: "192.168.0.97"

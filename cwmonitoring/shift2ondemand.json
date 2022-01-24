@@ -1,0 +1,18 @@
+[
+  { 
+    "Namespace": "aws:ec2:instances",
+    "OptionName": "SpotFleetOnDemandBase",
+    "Value": "0"
+  },
+  { 
+    "Namespace": "aws:ec2:instances",
+    "OptionName": "SpotFleetOnDemandAboveBasePercentage",
+    "Value": "100"
+  },
+  {
+    "Namespace": "aws:ec2:instances",
+    "OptionName": "EnableSpot",
+    "Value": "true"
+  }
+
+]
